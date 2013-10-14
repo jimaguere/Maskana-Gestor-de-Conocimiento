@@ -210,7 +210,7 @@ public class LineaInvestigacionBean {
         }catch(Exception e){
              System.out.println(e.toString());
             FacesContext.getCurrentInstance().
-                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al Eliminar la linea ", ""));
+                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al Eliminar la linea", ""));
         }
     }
 }
