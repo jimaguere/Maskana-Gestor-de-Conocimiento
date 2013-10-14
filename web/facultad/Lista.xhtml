@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+
+
+            <ui:define name="content">
+                <h:form id="form">
+                    <p:panel header="Lista de Facultades">
+                        <center>
+                            <p:dataTable value="#{facultadBean.listaFacultad}" var="fac" rowKey="#{fac.codFac}"
+                                         paginator="true" rows="10" selection="#{facultadBean.facultadSelecionada}"
+                                         selectionMode="single" filteredValue="#{facultadBean.listaSelecionada}"
+                                         style="width:80%"
+                                         id="tabla"
+                                         >
+                                <p:ajax event="rowSelect" update=":form:display" oncomplete="carDialog.show()" /> 
+
+                                <p:column headerText="Codigo" 
+                                          sortBy="#{fac.codFac}" 
+                                          filterBy="#{fac.codFac}"
+                                          id="codigoFac">  
+                                    #{fac.codFac}
+                                    
+                                </p:column>
+                                <p:column headerText="Nombre" 
+                                          sortBy="#{fac.nombre}" 
+                                          filterBy="#{fac.nombre}"
+                                          id="nombre">
+
+                                    #{fac.nombre}
+
+                                </p:column>                                
+                            </p:dataTable><br></br>
+                            <p:commandButton
+                                value="Nueva"                     
+                                ajax="false"
+                                action="Nueva.xhtml"  
+                                rendered="#{usuarioLogin.permisos(1)}"
+                                />
+                            <p:dialog header="Facultad" widgetVar="carDialog" resizable="false"  
+                                      width="400"  showEffect="explode" hideEffect="explode"
+                                      >
+                                <p:growl id="growl" showDetail="true" sticky="true" />
+                                <h:panelGrid id="display" columns="2">
+                                    
+                                    <h:outputText value="Codigo:" />
+                                    <h:outputText value="#{facultadBean.facultadSelecionada.codFac}"/>
+                                    <h:outputText value="Nombre:" />
+                                    <h:outputText value="#{facultadBean.facultadSelecionada.nombre}"/>
+                                    <p:commandButton
+                                        value="Modificar"
+                                        ajax="false" 
+                                        action="Modificar.xhtml"
+                                        rendered="#{usuarioLogin.permisos(1)}"
+                                        />
+                                    <p:commandButton
+                                        value="Eliminar"                     
+                                        ajax="true"
+                                        oncomplete="conf.show()" 
+                                        rendered="#{usuarioLogin.permisos(1)}">
+                                      
+                                    </p:commandButton>
+                                    
+                                </h:panelGrid>
+                               <p:dialog global="true" showEffect="fade" hideEffect="explode" widgetVar="conf" header="Esta Seguro">                        
+                                        <p:commandButton value="Aceptar" ajax="false" actionListener="#{facultadBean.eliminar}" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>                    
+                              </p:dialog> 
+                            </p:dialog>
+                             
+                        </center>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

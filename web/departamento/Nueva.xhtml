@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+                    <p:panel header="Registro de Departamentos" rendered="#{usuarioLogin.permisos(2)}">
+                        <p:messages/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel for="Codigo"
+                                           value="Codigo"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Codigo"
+                                         label="Codigo"
+                                         value="#{departamentoBean.codDep}"
+                                         required="true"/>
+                            <h:outputLabel for="Nombre"
+                                           value="Nombre"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Nombre"
+                                         label="Nombre"
+                                         value="#{departamentoBean.nomDep}"
+                                         required="true"/>
+                            <h:outputLabel for="Facultad"
+                                           value="Facultad"
+                                           styleClass="requiredLbl"/>
+                            <p:selectOneMenu id="Facultad" value="#{departamentoBean.codFac}" 
+                                             required="true">
+                                <f:selectItem itemLabel="Seleccione una Facultad"
+                                              itemValue="" />
+                                <f:selectItems value="#{facultadBean.listaFacultad}"
+                                               var="fac"
+                                               itemValue="#{fac.codFac}"
+                                               itemLabel="#{fac.nombre}"
+                                               />
+                            </p:selectOneMenu>
+                            <p:commandButton
+                                value="Registrar"                     
+                                ajax="false"
+                                actionListener="#{departamentoBean.nuevo}"                                       
+                                />  
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+                <center>
+                    <a href="Lista.xhtml">Regresar</a>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

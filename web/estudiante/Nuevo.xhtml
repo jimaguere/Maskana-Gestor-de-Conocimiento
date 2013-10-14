@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+
+                    <p:panel header="Registro de Estudiantes">
+                        <p:messages/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel for="Codigo"
+                                           value="Codigo"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Codigo"
+                                         label="Codigo"
+                                         value="#{estudianteBean.codestudiante}"
+                                         required="true"/>
+                            <h:outputLabel for="ide"
+                                           value="Documento de Identidad"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="ide"
+                                         label="ide"
+                                         value="#{estudianteBean.identificacion}"
+                                         required="true"/>
+                            <h:outputLabel for="Nombres"
+                                           value="Nombres"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Nombres"
+                                         label="Nombres"
+                                         value="#{estudianteBean.nombres}"
+                                         required="true"/>
+                            <h:outputLabel for="Apellidos"
+                                           value="Apellidos"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Apellidos"
+                                         label="Apellidos"
+                                         value="#{estudianteBean.apellidos}"
+                                         required="true"/>
+                            <h:outputLabel for="FechaGrado"
+                                           value="Fecha de Grado"
+                                           styleClass="requiredLbl"/>
+                            <p:calendar id="FechaGrado"
+                                        label="FechaGrado"
+                                        value="#{estudianteBean.fechaGrado}"
+                                        required="true"/>
+                            <h:outputLabel for="Programa"
+                                           value="Programa"
+                                           styleClass="requiredLbl"/>
+                            <p:selectOneMenu id="Programa" value="#{estudianteBean.codProg}" required="true" style="width: 100%">
+                                <f:selectItem itemValue="" itemLabel="Selecione un Programa"/>
+                                <f:selectItems  value="#{programaBean.listaPrograma}"
+                                                var="prog"
+                                                itemLabel="#{prog.nombre}"
+                                                itemValue="#{prog.codProg}"
+                                                />
+                            </p:selectOneMenu>
+                            <h:panelGroup>
+                                <p:commandButton
+                                    value="Registrar"                     
+                                    ajax="false"
+                                    actionListener="#{estudianteBean.nuevo}"
+                                    rendered="#{usuarioLogin.permisos(4)}"
+                                    />         
+                            </h:panelGroup>
+                        </h:panelGrid>
+
+                    </p:panel>
+                </h:form>
+                 <center>
+                    <a href="Lista.xhtml">Regresar</a>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

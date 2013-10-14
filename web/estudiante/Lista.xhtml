@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+   
+            <ui:define name="content">
+                <p:panel header="Lista de Estudiantes">
+                    <center>
+                         <h:form id="form">
+                             
+                             <h:panelGrid columns="6">
+                                 <h:outputText value="Consultar" />
+                                 <h:inputText id="Consultar"
+                                         label="Consultar"
+                                         value="#{estudianteBean.busqueda}"
+                                         required="false"/>
+                                 <p:commandButton
+                                     value="Buscar"                     
+                                     ajax="true"
+                                     actionListener="#{estudianteBean.buscar}"
+                                     update=":form"
+                                     />
+                                 <h:outputText value="#{estudianteBean.limite} de #{estudianteBean.sup}" />
+                                <p:commandButton
+                                value="Siguiente"                     
+                                ajax="true"
+                                actionListener="#{estudianteBean.sig}"  
+                                disabled="#{!(estudianteBean.sup>estudianteBean.li)}"
+                                update=":form"
+                                />
+                                 <p:commandButton
+                                value="Anterior"                     
+                                ajax="true"
+                                actionListener="#{estudianteBean.ant}"  
+                                disabled="#{!(estudianteBean.limite>10)}"
+                                update=":form"
+                                />
+                             </h:panelGrid>
+                             <p:dataTable value="#{estudianteBean.listaEstudiante}" var="est" rowKey="#{est.codestudiante}"
+                                          rowIndexVar=""
+                                          selection="#{estudianteBean.estudianteSelecionado}"
+                                          selectionMode="single"
+                                          id="tabla"
+                                          rows="10"               
+                                          style="width: 90%;"
+                                         >
+
+                                <p:ajax event="rowSelect" update=":form:display" oncomplete="carDialog.show()" />
+
+                                <p:column id="codEst"
+                                          sortBy="#{est.codestudiante}"
+                                          filterMatchMode="contains"
+                                          headerText="Codigo"
+                                          width="20%"
+                                          >
+                                    #{est.codestudiante}
+                                </p:column>
+
+                                <p:column id="nom"
+                                          sortBy="#{est.nombres}"
+                                          headerText="Nombre"
+                                          width="20%"
+                                          filterMatchMode="contains"
+                                          >
+                                    #{est.nombres}
+                                </p:column>
+                                
+                                <p:column id="Ape"
+                                          sortBy="#{est.apellidos}"
+                                          headerText="Apellido"
+                                          width="20%"
+                                          filterMatchMode="contains"
+                                          >
+                                    #{est.apellidos}
+                                </p:column>  
+                                
+                                <p:column id="Prog"
+                                          sortBy="#{est.programa.nombre}"
+                                          headerText="Programa"
+                                          width="60%"
+                                          filterMatchMode="contains"
+                                          >
+                                    #{est.programa.nombre}
+                                </p:column> 
+                                
+                                 <p:column id="Dep"                                        
+                                           sortBy="#{est.programa.codDep.nombre}"
+                                          headerText="Departamento"
+                                            width="20%"
+                                            filterMatchMode="contains"
+                                          >
+                                    #{est.programa.codDep.nombre}
+                                </p:column> 
+                                
+                                 <p:column id="Fac"
+                                           
+                                           sortBy="#{est.programa.codDep.codFac.nombre}"
+                                          headerText="Facultad"
+                                            width="20%"
+                                            filterMatchMode="contains"
+                                          >
+                                    #{est.programa.codDep.codFac.nombre}
+                                </p:column>    
+
+
+                            </p:dataTable><br></br><br></br>
+
+                            <p:commandButton
+                                value="Nuevo"                     
+                                ajax="false"
+                                action="Nuevo.xhtml"  
+                                rendered="#{usuarioLogin.permisos(4)}"
+                                />
+                            <p:dialog header="Estudiante" widgetVar="carDialog" resizable="false"  
+                                      width="400"  showEffect="explode" hideEffect="explode"
+                                      >
+                                <p:growl id="growl" showDetail="true" sticky="true" />
+                                <h:panelGrid id="display" columns="2">
+                                    <h:outputText value="Codigo:" />
+                                    <h:outputText value="#{estudianteBean.estudianteSelecionado.codestudiante}"/>
+                                    <h:outputText value="Nombre:" />
+                                    <h:outputText value="#{estudianteBean.estudianteSelecionado.nombres}"/>
+                                    <h:outputText value="Apellido:" />
+                                    <h:outputText value="#{estudianteBean.estudianteSelecionado.apellidos}"/>
+                                    <h:outputText value="Fecha Grado:" />
+                                    <h:outputText value="#{estudianteBean.estudianteSelecionado.fechaGrado.toLocaleString().substring(0,10)}"/>
+                                    <h:outputText value="Programa:" />
+                                    <h:outputText value="#{estudianteBean.estudianteSelecionado.programa.nombre}"/>
+                                    <p:commandButton
+                                        value="Modificar"
+                                        ajax="false" 
+                                        action="Modificar.xhtml"
+                                        rendered="#{usuarioLogin.permisos(4)}"
+                                        />
+                                    <p:commandButton
+                                        value="Eliminar"                     
+                                        ajax="true"
+                                        oncomplete="conf.show()" 
+                                        rendered="#{usuarioLogin.permisos(4)}"/>
+                                </h:panelGrid>
+                                <p:dialog global="true" showEffect="fade" hideEffect="explode" widgetVar="conf" header="Esta Seguro">                        
+                                    <p:commandButton value="Aceptar" ajax="false" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+                                                     actionListener="#{estudianteBean.eliminar}"/>                    
+                                </p:dialog> 
+                            </p:dialog>
+                        </h:form>
+                    </center>
+                </p:panel>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

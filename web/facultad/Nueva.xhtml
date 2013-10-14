@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+                    <p:panel header="Registro de Facultades" rendered="#{usuarioLogin.permisos(1)}">
+                        <p:messages/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel for="Codigo"
+                                           value="Codigo"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Codigo"
+                                         label="Codigo"
+                                         value="#{facultadBean.codFac}"
+                                         required="true"/>
+                            <h:outputLabel for="Nombre"
+                                           value="Nombre"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Nombre"
+                                         label="Nombre"
+                                         value="#{facultadBean.nombre}"
+                                         required="true"/>
+                            <p:commandButton
+                                value="Registrar"                     
+                                ajax="false"
+                                actionListener="#{facultadBean.nueva}"                                       
+                                />                       
+                        </h:panelGrid>
+
+                    </p:panel>
+                </h:form>
+                <center>
+                    <a href="Lista.xhtml">Regresar</a>
+                </center>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

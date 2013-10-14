@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+
+            <ui:define name="content">
+                <p:panel header="Lista de Docentes">
+
+                    <center>
+
+                        <h:form id="form">
+
+                            <h:panelGrid columns="6">
+                                <h:outputText value="Consultar" />
+                                <h:inputText id="Consultar"
+                                             label="Consultar"
+                                             value="#{docenteBean.busqueda}"
+                                             required="false"/>
+                                <p:commandButton
+                                    value="Buscar"                     
+                                    ajax="true"
+                                    actionListener="#{docenteBean.buscar}"
+                                    update=":form"
+                                    />
+                                <h:outputText value="#{docenteBean.limite} de #{docenteBean.sup}" />
+                                <p:commandButton
+                                    value="Siguiente"                     
+                                    ajax="true"
+                                    actionListener="#{docenteBean.sig}"  
+                                    disabled="#{!(docenteBean.sup>docenteBean.li)}"
+                                    update=":form"
+                                    />
+                                <p:commandButton
+                                    value="Anterior"                     
+                                    ajax="true"
+                                    actionListener="#{docenteBean.ant}"  
+                                    disabled="#{!(docenteBean.limite>10)}"
+                                    update=":form"
+                                    />
+                            </h:panelGrid>
+                            <p:dataTable value="#{docenteBean.listaDocente}" var="doc" rowKey="#{doc.codocente}"
+                                         rowIndexVar=""
+                                         selection="#{docenteBean.docenteSeleccionado}"
+                                         selectionMode="single"
+                                         id="tabla"
+                                         rows="10"               
+                                         style="width: 80%;"
+                                         >
+
+                                <p:ajax event="rowSelect" update=":form:display" oncomplete="carDialog.show()" />
+
+                                <p:column id="codDoc"
+                                          sortBy="#{doc.codocente}"
+                                          filterMatchMode="contains"
+                                          headerText="Codigo"
+                                          width="20%"
+                                          >
+                                    #{doc.codocente}
+                                </p:column>
+
+                                <p:column id="nom"
+                                          sortBy="#{doc.nombre}"
+                                          headerText="Nombre"
+                                          width="20%"
+                                          filterMatchMode="contains"
+                                          >
+                                    #{doc.nombre}
+                                </p:column>
+
+                                <p:column id="Ape"
+                                          sortBy="#{doc.apellido}"
+                                          headerText="Apellido"
+                                          width="20%"
+                                          filterMatchMode="contains"
+                                          >
+                                    #{doc.apellido}
+                                </p:column>  
+
+                                <p:column id="tipo"
+                                          sortBy="#{doc.tipo}"
+                                          headerText="Vinculado"
+                                          width="60%"
+                                          filterMatchMode="contains"
+                                          >
+                                    #{doc.tipo}
+                                </p:column> 
+                                
+                            </p:dataTable><br></br><br></br>
+
+                            <p:commandButton
+                                value="Nuevo"                     
+                                ajax="false"
+                                action="Nuevo.xhtml"  
+                                rendered="#{usuarioLogin.permisos(5)}"
+                                />
+                            <p:dialog header="Estudiante" widgetVar="carDialog" resizable="false"  
+                                      width="400"  showEffect="explode" hideEffect="explode"
+                                      >
+                                <p:growl id="growl" showDetail="true" sticky="true" />
+                                <h:panelGrid id="display" columns="2">
+                                    <h:outputText value="Codigo:" />
+                                    <h:outputText value="#{docenteBean.docenteSeleccionado.codocente}"/>
+                                    <h:outputText value="Nombre:" />
+                                    <h:outputText value="#{docenteBean.docenteSeleccionado.nombre}"/>
+                                    <h:outputText value="Apellido:" />
+                                    <h:outputText value="#{docenteBean.docenteSeleccionado.apellido}"/>
+                                    <h:outputText value="Vinculado:" />
+                                    <h:outputText value="#{docenteBean.docenteSeleccionado.tipo}"/>                                 
+                                    <p:commandButton
+                                        value="Modificar"
+                                        ajax="false" 
+                                        action="Modificar.xhtml"
+                                        rendered="#{usuarioLogin.permisos(5)}"
+                                        />
+                                    <p:commandButton
+                                        value="Eliminar"                     
+                                        ajax="true"
+                                        oncomplete="conf.show()" 
+                                        rendered="#{usuarioLogin.permisos(5)}"/>
+                                </h:panelGrid>
+                                <p:dialog global="true" showEffect="fade" hideEffect="explode" widgetVar="conf" header="Esta Seguro">                        
+                                    <p:commandButton value="Aceptar" ajax="false" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+                                                     actionListener="#{docenteBean.eliminar}"/>                    
+                                </p:dialog> 
+                            </p:dialog>
+
+                        </h:form>  
+
+                    </center>
+
+                </p:panel>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

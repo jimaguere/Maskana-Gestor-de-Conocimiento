@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+
+            <ui:define name="content">
+                <h:form id="form">
+                    <p:panel header="Lista de Lineas de Investigación">
+                        <center>
+                            <p:dataTable value="#{lineaInvestigacionBean.listaLineaInvestigacion}" var="linea" rowKey="#{linea.codigoLinea}"
+                                         paginator="false" rows="10" selection="#{lineaInvestigacionBean.lineaInvestigacionSelecionada}"
+                                         selectionMode="single" filteredValue="#{lineaInvestigacionBean.listaLineaInvestigacionSelecionada}"
+                                         style="width:100%"
+                                         id="tabla"
+                                         scrollable="true"
+                                         scrollWidth="80%"
+                                         >
+                                <p:ajax event="rowSelect" update=":form:display" oncomplete="carDialog.show()" />
+                                <p:column
+                                    filterBy="#{linea.codigoLinea}"
+                                    sortBy="#{linea.codigoLinea}"
+                                    headerText="Codigo">
+                                    #{linea.codigoLinea}
+                                </p:column>
+                                <p:column
+                                    filterMatchMode="contains"
+                                    resizable="true"
+                                    filterBy="#{linea.nombre}"
+                                    sortBy="#{linea.nombre}"
+                                    headerText="Nombre">
+                                    #{linea.nombre}
+                                </p:column>
+                                 <p:column
+                                     filterBy="#{linea.codDep.nombre}"
+                                     sortBy="#{linea.codDep.nombre}"
+                                    headerText="Departamento">
+                                    #{linea.codDep.nombre}
+                                </p:column>
+                                
+                            </p:dataTable><br></br><br></br>
+                            <p:commandButton
+                                value="Nueva"                     
+                                ajax="false"
+                                action="Nueva.xhtml"  
+                                rendered="#{usuarioLogin.permisos(6)}"
+                                />
+                             <p:dialog header="Liena de Investigación" widgetVar="carDialog" resizable="false"  
+                                      width="400"  showEffect="explode" hideEffect="explode">
+                                 <p:growl id="growl" showDetail="true" sticky="true" />
+                                 <h:panelGrid id="display" columns="2">
+                                    <h:outputText value="Codigo:" />
+                                    <h:outputText value="#{lineaInvestigacionBean.lineaInvestigacionSelecionada.codigoLinea}"/>
+                                    <h:outputText value="Nombre:" />
+                                    <h:outputText value="#{lineaInvestigacionBean.lineaInvestigacionSelecionada.nombre}"/>
+                                    <h:outputText value="Descripción:" />
+                                    <h:outputText value="#{lineaInvestigacionBean.lineaInvestigacionSelecionada.descripcion}"/>
+                                    <h:outputText value="Departamento:" />
+                                    <h:outputText value="#{lineaInvestigacionBean.lineaInvestigacionSelecionada.codDep.nombre}"/>
+                                    <p:commandButton
+                                        value="Modificar"
+                                        ajax="false" 
+                                        action="Modificar.xhtml"
+                                        rendered="#{usuarioLogin.permisos(6)}"
+                                        />
+                                    <p:commandButton
+                                        value="Eliminar"                     
+                                        ajax="true"
+                                        oncomplete="conf.show()" 
+                                        rendered="#{usuarioLogin.permisos(6)}"/>
+                                 </h:panelGrid>
+                                 <p:dialog global="true" showEffect="fade" hideEffect="explode" widgetVar="conf" header="Esta Seguro">                        
+                                     <p:commandButton value="Aceptar" ajax="false"  styleClass="ui-confirmdialog-yes" icon="ui-icon-check" actionListener="#{lineaInvestigacionBean.eliminar}"/>                    
+                                </p:dialog> 
+                             </p:dialog>    
+                            
+                        </center>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

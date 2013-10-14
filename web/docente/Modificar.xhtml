@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+                     <p:panel header="Modificar Docente">
+                          <p:messages/>
+                          <h:panelGrid columns="2">
+                              
+                            <h:outputLabel for="Codigo"
+                                           value="Codigo"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Codigo"
+                                         label="Codigo"
+                                         value="#{docenteBean.docenteSeleccionado.codocente}"
+                                         disabled="true"
+                                         required="true"/>
+                            <h:outputLabel for="Nombre"
+                                           value="Nombre"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="nombre"
+                                         label="Nombre"
+                                         value="#{docenteBean.docenteSeleccionado.nombre}"
+                                         required="true"/>
+                            <h:outputLabel for="Apellido"
+                                           value="Apellido"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Apellido"
+                                         label="Apellido"
+                                         value="#{docenteBean.docenteSeleccionado.apellido}"
+                                         required="true"/>
+                             <h:outputLabel for="Vinculado"
+                                           value="Vinculado"
+                                           styleClass="requiredLbl"/>
+                             <p:selectOneMenu id="Vinculacion" value="#{docenteBean.tipo}" required="true" style="width: 100%">
+                                    <f:selectItem itemValue="I" itemLabel="Interno"/>
+                                    <f:selectItem itemValue="E" itemLabel="Externo"/>
+                            </p:selectOneMenu>
+                             <h:panelGroup>
+                              <p:commandButton
+                                    value="Modificar"                     
+                                    ajax="false"
+                                    actionListener="#{docenteBean.modificar}"
+                                    rendered="#{usuarioLogin.permisos(5)}"
+                                    />         
+                            </h:panelGroup>
+                            
+                          </h:panelGrid>
+                     </p:panel>
+                 </h:form>
+                <center>
+                    <a href="Lista.xhtml">Regresar</a>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+
+            <ui:define name="content">
+                <p:panel header="Lista de Programas">
+                    <center>
+                        <h:form>
+                            <h:panelGrid columns="4">
+                                <h:outputLabel for="Facultad"
+                                               value="Facultad"
+                                               styleClass="requiredLbl"/>
+                                <p:selectOneMenu id="Facultad" value="#{programaBean.codFac}" 
+                                                 required="true">
+                                    <f:selectItem  
+                                        itemLabel="Selecione una facultad"/>
+                                    <f:selectItems  value="#{facultadBean.listaFacultad}"
+                                                    var="fac"
+                                                    itemLabel="#{fac.nombre}"
+                                                    itemValue="#{fac.codFac}"
+                                                    />
+                                    <p:ajax update="departamentos"  
+                                            listener="#{programaBean.actualizarDepartamentos}" /> 
+
+                                </p:selectOneMenu>
+                                <h:outputLabel for="departamentos"
+                                               value="Departamento"
+                                               styleClass="requiredLbl"/>
+                                <p:selectOneMenu id="departamentos" value="#{programaBean.codDep}" 
+                                                 required="true">
+                                    <f:selectItem 
+                                        itemLabel="selecione un departamento"
+                                        />
+                                    <f:selectItems  value="#{programaBean.listaDepartamentos}"
+                                                    var="dep"
+                                                    itemLabel="#{dep.nombre}"
+                                                    itemValue="#{dep.codDep}"
+                                                    />
+
+                                    <p:ajax update=":form:tabla"  
+                                            listener="#{programaBean.tabla}" /> 
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                        </h:form>
+                        <h:form id="form">
+
+                            <p:dataTable value="#{programaBean.listaPrograma}" var="prog" rowKey="#{prog.codProg}"
+                                         selection="#{programaBean.programaSeleccionado}"
+                                         selectionMode="single" filteredValue="#{programaBean.listaSeleccionada}"
+                                         id="tabla"
+                                         paginator="true" rows="10"
+                                         style="width: 80%;"
+                                         >
+
+                                <p:ajax event="rowSelect" update=":form:display" oncomplete="carDialog.show()" />
+
+                                <p:column id="codProg"
+                                          filterBy="#{prog.codProg}"
+                                          sortBy="#{prog.codProg}"
+                                          headerText="Codigo"
+                                          width="04">
+                                    #{prog.codProg}
+                                </p:column>
+
+                                <p:column id="nomProg"
+                                          filterBy="#{prog.nombre}"
+                                          sortBy="#{prog.nombre}"
+                                          headerText="Nombre"
+                                          width="1">
+                                    #{prog.nombre}
+                                </p:column>                              
+
+                            </p:dataTable><br></br><br></br>
+
+                            <p:commandButton
+                                value="Nuevo"                     
+                                ajax="false"
+                                action="Nueva.xhtml"  
+                                rendered="#{usuarioLogin.permisos(3)}"
+                                />
+                            <p:dialog header="Departamento" widgetVar="carDialog" resizable="false"  
+                                      width="400"  showEffect="explode" hideEffect="explode"
+                                      >
+                                <p:growl id="growl" showDetail="true" sticky="true" />
+                                <h:panelGrid id="display" columns="2">
+                                    <h:outputText value="Codigo:" />
+                                    <h:outputText value="#{programaBean.programaSeleccionado.codProg}"/>
+                                    <h:outputText value="Nombre:" />
+                                    <h:outputText value="#{programaBean.programaSeleccionado.nombre}"/>
+                                    <h:outputText value="Departamento:" />
+                                    <h:outputText value="#{programaBean.programaSeleccionado.codDep.nombre}"/>
+                                    <h:outputText value="Facultad:" />
+                                    <h:outputText value="#{programaBean.programaSeleccionado.codDep.codFac.nombre}"/>
+                                    <p:commandButton
+                                        value="Modificar"
+                                        ajax="false" 
+                                        action="Modificar.xhtml"
+                                        rendered="#{usuarioLogin.permisos(3)}"
+                                        />
+                                    <p:commandButton
+                                        value="Eliminar"                     
+                                        ajax="true"
+                                        oncomplete="conf.show()" 
+                                        rendered="#{usuarioLogin.permisos(3)}"/>
+                                </h:panelGrid>
+                                <p:dialog global="true" showEffect="fade" hideEffect="explode" widgetVar="conf" header="Esta Seguro">                        
+                                    <p:commandButton value="Aceptar" ajax="false" actionListener="#{programaBean.eliminar}" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>                    
+                                </p:dialog> 
+                            </p:dialog>
+                        </h:form>
+                    </center>
+                </p:panel>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

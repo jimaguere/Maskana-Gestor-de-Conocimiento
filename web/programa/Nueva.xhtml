@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+                    <p:panel header="Registro de Programas" rendered="#{usuarioLogin.permisos(3)}">
+                        <p:messages/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel for="Codigo"
+                                           value="Codigo"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Codigo"
+                                         label="Codigo"
+                                         value="#{programaBean.codProg}"
+                                         required="true"/>
+                            <h:outputLabel for="Nombre"
+                                           value="Nombre"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Nombre"
+                                         label="Nombre"
+                                         value="#{programaBean.nombre}"
+                                         required="true"/>
+                            <h:outputLabel for="Facultad"
+                                           value="Facultad"
+                                           styleClass="requiredLbl"/>
+                            <p:selectOneMenu id="Facultad" value="#{programaBean.codFac}" required="true">
+                                <f:selectItem itemValue="" itemLabel="Selecione una Facultad"/>
+                                <f:selectItems  value="#{facultadBean.listaFacultad}"
+                                                var="fac"
+                                                itemLabel="#{fac.nombre}"
+                                                itemValue="#{fac.codFac}"
+                                                />
+                                <p:ajax update="departamentos"  
+                                        listener="#{programaBean.actualizarDepartamentos}" /> 
+
+                            </p:selectOneMenu>
+                            <h:outputLabel for="departamentos"
+                                           value="Departamento"
+                                           styleClass="requiredLbl"/>
+                            <p:selectOneMenu id="departamentos" value="#{programaBean.codDep}" required="true">
+                                <f:selectItem itemValue="" itemLabel="Selecione un Departamento"/>
+                                <f:selectItems  value="#{programaBean.listaDepartamentos}"
+                                                var="dep"
+                                                itemLabel="#{dep.nombre}"
+                                                itemValue="#{dep.codDep}"
+                                                />
+
+                            </p:selectOneMenu>
+                            <p:commandButton
+                                value="Registrar"                     
+                                ajax="false"
+                                actionListener="#{programaBean.nuevo}"                                       
+                                />                       
+                        </h:panelGrid>
+
+                    </p:panel>
+                </h:form>
+                <center>
+                    <a href="Lista.xhtml">Regresar</a>
+                </center>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
