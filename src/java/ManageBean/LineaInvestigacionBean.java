@@ -24,11 +24,12 @@ import pojo.Lineainvestigacion;
  *
  * @author mateo
  */
-@ManagedBean(name="lineaInvestigacionBean")
+@ManagedBean(name = "lineaInvestigacionBean")
 @SessionScoped
 public class LineaInvestigacionBean {
-    private List<Lineainvestigacion>listaLineaInvestigacion;
-    private List<Lineainvestigacion>listaLineaInvestigacionSelecionada;
+
+    private List<Lineainvestigacion> listaLineaInvestigacion;
+    private List<Lineainvestigacion> listaLineaInvestigacionSelecionada;
     private Lineainvestigacion lineaInvestigacionSelecionada;
     @EJB
     LineainvestigacionFacade lineaInvestigacionFacade;
@@ -38,7 +39,7 @@ public class LineaInvestigacionBean {
     private String nombre;
     private String descripcion;
     private String codDep;
-    private String clase="Linea_investigacion";
+    private String clase = "Linea_investigacion";
 
     public String getCodigoLinea() {
         return codigoLinea;
@@ -71,7 +72,6 @@ public class LineaInvestigacionBean {
     public void setCodDep(String codDep) {
         this.codDep = codDep;
     }
-    
 
     public List<Lineainvestigacion> getListaLineaInvestigacion() {
         return listaLineaInvestigacion;
@@ -104,30 +104,31 @@ public class LineaInvestigacionBean {
     public void setLineaInvestigacionFacade(LineainvestigacionFacade lineaInvestigacionFacade) {
         this.lineaInvestigacionFacade = lineaInvestigacionFacade;
     }
-    
+
     /**
      * Creates a new instance of LineaInvestigacionBean
      */
     public LineaInvestigacionBean() {
-       
     }
+
     @PostConstruct
-    public void reset(){
-        listaLineaInvestigacion=this.lineaInvestigacionFacade.findAll();
-        lineaInvestigacionSelecionada=null;
-        listaLineaInvestigacionSelecionada=null;
-        codDep="";
-        nombre="";
-        codigoLinea="";
-        descripcion="";  
+    public void reset() {
+        listaLineaInvestigacion = this.lineaInvestigacionFacade.findAll();
+        lineaInvestigacionSelecionada = null;
+        listaLineaInvestigacionSelecionada = null;
+        codDep = "";
+        nombre = "";
+        codigoLinea = "";
+        descripcion = "";
     }
-    public void nueva(){
-        Lineainvestigacion lineaInvestigacion=new Lineainvestigacion();
+
+    public void nueva() {
+        Lineainvestigacion lineaInvestigacion = new Lineainvestigacion();
         lineaInvestigacion.setCodigoLinea(codigoLinea);
         lineaInvestigacion.setDescripcion(descripcion.toUpperCase());
         lineaInvestigacion.setNombre(nombre.toUpperCase());
         lineaInvestigacion.setCodDep(this.departamentoFacade.findByCodep(codDep).get(0));
-        try{
+        try {
             this.lineaInvestigacionFacade.create(lineaInvestigacion);
             ModeloBean ont = (ModeloBean) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("modeloBean");
             String nS = ont.getPrefijo();
@@ -153,34 +154,36 @@ public class LineaInvestigacionBean {
                     addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al registrar la linea ", ""));
         }
     }
-    public void modificar(){
-        String codigoDepartamento="";
-        boolean cambio=false;
-        try{
-           lineaInvestigacionSelecionada.setDescripcion(lineaInvestigacionSelecionada.getDescripcion().toUpperCase());
-           lineaInvestigacionSelecionada.setNombre(lineaInvestigacionSelecionada.getNombre().toUpperCase());
-           if(!lineaInvestigacionSelecionada.getCodDep().getCodDep().equals(codDep)){
-               codigoDepartamento=lineaInvestigacionSelecionada.getCodDep().getCodDep();
-               lineaInvestigacionSelecionada.setCodDep(this.departamentoFacade.findByCodep(codDep).get(0));
-               cambio=true; 
+
+    public void modificar() {
+        String codigoDepartamento = "";
+        boolean cambio = false;
+        try {
+            lineaInvestigacionSelecionada.setDescripcion(lineaInvestigacionSelecionada.getDescripcion().toUpperCase());
+            lineaInvestigacionSelecionada.setNombre(lineaInvestigacionSelecionada.getNombre().toUpperCase());
+            if (!lineaInvestigacionSelecionada.getCodDep().getCodDep().equals(codDep)) {
+                codigoDepartamento = lineaInvestigacionSelecionada.getCodDep().getCodDep();
+                lineaInvestigacionSelecionada.setCodDep(this.departamentoFacade.findByCodep(codDep).get(0));
+                cambio = true;
             }
             this.lineaInvestigacionFacade.edit(lineaInvestigacionSelecionada);
             ModeloBean ont = (ModeloBean) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("modeloBean");
             String nS = ont.getPrefijo();
-            OntModel modelo = ont.getModelOnt();   
+            OntModel modelo = ont.getModelOnt();
             Individual linea = modelo.getIndividual(nS + clase + lineaInvestigacionSelecionada.getCodigoLinea());
             DatatypeProperty codigo_lin = modelo.getDatatypeProperty(nS + "codigo_linea");
             DatatypeProperty nombre_lin = modelo.getDatatypeProperty(nS + "nombre_linea");
             DatatypeProperty desc = modelo.getDatatypeProperty(nS + "descripcion");
-            if(cambio){
+            if (cambio) {
                 ObjectProperty pertenece = modelo.getObjectProperty(nS + "Pertenece_a");
                 Individual departamento = modelo.getIndividual(nS + "Departamento" + codigoDepartamento);
-                linea.removeProperty(pertenece,departamento);
+                linea.removeProperty(pertenece, departamento);
                 departamento.removeProperty(pertenece.getInverse(), linea);
                 departamento = modelo.getIndividual(nS + "Departamento" + codDep);
                 linea.setPropertyValue(pertenece, departamento);
-                departamento.addProperty(pertenece.getInverse(), linea);           
+                departamento.addProperty(pertenece.getInverse(), linea);
             }
+
             linea.setPropertyValue(codigo_lin, modelo.createTypedLiteral(lineaInvestigacionSelecionada.getCodigoLinea()));
             linea.setPropertyValue(nombre_lin, modelo.createTypedLiteral(lineaInvestigacionSelecionada.getNombre()));
             linea.setPropertyValue(desc, modelo.createTypedLiteral(lineaInvestigacionSelecionada.getDescripcion()));
@@ -193,8 +196,9 @@ public class LineaInvestigacionBean {
                     addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al modificar la linea ", ""));
         }
     }
-    public void eliminar(){
-        try{
+
+    public void eliminar() {
+        try {
             this.lineaInvestigacionFacade.remove(lineaInvestigacionSelecionada);
             ModeloBean ont = (ModeloBean) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("modeloBean");
             String nS = ont.getPrefijo();
@@ -202,13 +206,13 @@ public class LineaInvestigacionBean {
             OntClass claseLin = modelo.getOntClass(nS + clase);
             ObjectProperty pertenece = modelo.getObjectProperty(nS + "Pertenece_a");
             Individual departamento = modelo.getIndividual(nS + "Departamento" + lineaInvestigacionSelecionada.getCodDep().getCodDep());
-            departamento.removeProperty(pertenece.getInverse(),modelo.getIndividual(nS + clase + lineaInvestigacionSelecionada.getCodigoLinea()));
+            departamento.removeProperty(pertenece.getInverse(), modelo.getIndividual(nS + clase + lineaInvestigacionSelecionada.getCodigoLinea()));
             modelo.getIndividual(nS + clase + lineaInvestigacionSelecionada.getCodigoLinea()).remove();
             ont.guardarModelo(modelo);
             reset();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Linea de investigación Eliminada", ""));            
-        }catch(Exception e){
-             System.out.println(e.toString());
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Linea de investigación Eliminada", ""));
+        } catch (Exception e) {
+            System.out.println(e.toString());
             FacesContext.getCurrentInstance().
                     addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al Eliminar la linea", ""));
         }
