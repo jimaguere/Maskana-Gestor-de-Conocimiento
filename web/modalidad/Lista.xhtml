@@ -1,14 +1,81 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
 
     <body>
 
         <ui:composition template="./../Plantilla.xhtml">
 
             <ui:define name="content">
-                content
+                <h:form id="form">
+                    <p:panel header="Lista de Modalidades">
+                        <center>
+                            <p:dataTable value="#{modalidadBean.listaMadalidades}" var="modalidad" rowKey="#{modalidad.codModalidad}"
+                                         paginator="true" rows="10" selection="#{modalidadBean.modalidadSeleccionada}"
+                                         selectionMode="single" filteredValue="#{modalidadBean.listaModalidadesSeleccionda}"
+                                         style="width:80%"
+                                         id="tabla"
+                                         >
+                                <p:ajax event="rowSelect" update=":form:display" oncomplete="carDialog.show()" />
+                                <p:column
+                                    filterBy="#{modalidad.codModalidad}"
+                                    sortBy="#{modalidad.codModalidad}"
+                                    headerText="Codigo">
+                                    #{modalidad.codModalidad}
+                                </p:column>
+                                <p:column
+                                    filterMatchMode="contains"
+                                    filterBy="#{modalidad.modalidad}"
+                                    sortBy="#{modalidad.modalidad}"
+                                    headerText="Nombre">
+                                    #{modalidad.modalidad}
+                                </p:column>
+                                <p:column
+                                    filterMatchMode="contains"
+                                    filterBy="#{modalidad.codDep.nombre}"
+                                    sortBy="#{modalidad.codDep.nombre}"
+                                    headerText="Departamento">
+                                    #{modalidad.codDep.nombre}
+                                </p:column>
+                            </p:dataTable><br></br><br></br>
+                            <p:commandButton
+                                value="Nueva"                     
+                                ajax="false"
+                                action="Nueva.xhtml"  
+                                rendered="#{usuarioLogin.permisos(7)}"
+                                />
+                            <p:dialog header="Liena de Investigación" widgetVar="carDialog" resizable="false"  
+                                      width="400"  showEffect="explode" hideEffect="explode">
+                                 <p:growl id="growl" showDetail="true" sticky="true" />
+                                 <h:panelGrid id="display" columns="2">
+                                    <h:outputText value="Codigo:" />
+                                    <h:outputText value="#{modalidadBean.modalidadSeleccionada.codModalidad}"/>
+                                    <h:outputText value="Nombre:" />
+                                    <h:outputText value="#{modalidadBean.modalidadSeleccionada.modalidad}"/>
+                                    <h:outputText value="Departamento:" />
+                                    <h:outputText value="#{modalidadBean.modalidadSeleccionada.codDep.nombre}"/>
+                                    <p:commandButton
+                                        value="Modificar"
+                                        ajax="false" 
+                                        action="Modificar.xhtml"
+                                        rendered="#{usuarioLogin.permisos(7)}"
+                                        />
+                                    <p:commandButton
+                                        value="Eliminar"                     
+                                        ajax="true"
+                                        oncomplete="conf.show()" 
+                                        rendered="#{usuarioLogin.permisos(7)}"/>
+                                 </h:panelGrid>
+                                 <p:dialog global="true" showEffect="fade" hideEffect="explode" widgetVar="conf" header="Esta Seguro">                        
+                                     <p:commandButton value="Aceptar" ajax="false"  styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>                    
+                                </p:dialog> 
+                             </p:dialog>    
+                        </center>
+                    </p:panel>
+                </h:form>
             </ui:define>
 
         </ui:composition>
