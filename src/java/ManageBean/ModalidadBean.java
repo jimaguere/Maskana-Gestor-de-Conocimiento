@@ -178,6 +178,27 @@ public class ModalidadBean {
 
 
     }
+    public void eliminar(){
+        try{
+            this.modalidadFacade.remove(modalidadSeleccionada);
+            ModeloBean ont = (ModeloBean) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("modeloBean");
+            String nS = ont.getPrefijo();
+            OntModel modelo = ont.getModelOnt();
+            Individual modalidadI = modelo.getIndividual(nS + clase + modalidadSeleccionada.getCodModalidad());
+            Individual departamento = modelo.getIndividual(nS + "Departamento" + modalidadSeleccionada.getCodDep().getCodDep());
+            ObjectProperty pertenece = modelo.getObjectProperty(nS + "Es_del_departamento");
+            departamento.removeProperty(pertenece.getInverse(), modalidadI);
+            modelo.getIndividual(nS + clase + modalidadSeleccionada.getCodModalidad()).remove();
+            ont.guardarModelo(modelo);
+            reset();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("modalidad Eliminada", ""));
+        }catch(Exception e){
+             System.out.println(e.toString());
+            FacesContext.getCurrentInstance().
+                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al Eliminar modalidad ", ""));
+        }
+        
+    }
 
     /**
      * Creates a new instance of ModalidadBean

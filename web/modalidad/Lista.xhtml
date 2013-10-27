@@ -70,7 +70,7 @@
                                         rendered="#{usuarioLogin.permisos(7)}"/>
                                  </h:panelGrid>
                                  <p:dialog global="true" showEffect="fade" hideEffect="explode" widgetVar="conf" header="Esta Seguro">                        
-                                     <p:commandButton value="Aceptar" ajax="false"  styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>                    
+                                     <p:commandButton value="Aceptar" ajax="false"  styleClass="ui-confirmdialog-yes" icon="ui-icon-check" action="#{modalidadBean.eliminar}"/>                    
                                 </p:dialog> 
                              </p:dialog>    
                         </center>
