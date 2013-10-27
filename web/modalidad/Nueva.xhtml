@@ -1,22 +1,62 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
 
     <body>
 
         <ui:composition template="./../Plantilla.xhtml">
 
-            <ui:define name="left">
-                left
-            </ui:define>
 
-            <ui:define name="top">
-                top
-            </ui:define>
 
             <ui:define name="content">
-                content
+                <h:form>
+                    <p:panel header="Registro de Modalidades" rendered="#{usuarioLogin.permisos(7)}">
+                        <p:messages/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel for="Codigo"
+                                           value="Codigo"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Codigo"
+                                         label="Codigo"
+                                         value="#{modalidadBean.codModalidad}"
+                                         required="true"/>
+                            <h:outputLabel for="Nombre"
+                                           value="Nombre"
+                                           styleClass="requiredLbl"/>
+                            <h:inputText id="Nombre"
+                                         label="Nombre"
+                                         value="#{modalidadBean.modalidad}"
+                                         required="true"/>
+                            <h:outputLabel for="Descripcion"
+                                           value="Descripción"
+                                           styleClass="requiredLbl"/>
+                            <h:outputLabel for="departamentos"
+                                           value="Departamento"
+                                           styleClass="requiredLbl"/>
+                            <p:selectOneMenu id="departamentos" value="#{lineaInvestigacionBean.codDep}" required="true">
+                                <f:selectItem itemValue="" itemLabel="Selecione un Departamento"/>
+                                <f:selectItems  value="#{departamentoBean.listaDepartamento}"
+                                                var="dep"
+                                                itemLabel="#{dep.nombre}"
+                                                itemValue="#{dep.codDep}"
+                                                />
+                            </p:selectOneMenu>
+                            <h:panelGroup>
+                                <p:commandButton
+                                    value="Registrar"                     
+                                    ajax="false"
+                                    actionListener="#{modalidadBean.nuevo}"                                       
+                                    />  
+                            </h:panelGroup>
+                        </h:panelGrid>
+
+                    </p:panel>
+
+                </h:form>
             </ui:define>
 
         </ui:composition>

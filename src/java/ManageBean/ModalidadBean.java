@@ -24,12 +24,39 @@ public class ModalidadBean {
     private List<Modalidad>listaMadalidades;
     private List<Modalidad>listaModalidadesSeleccionda;
     private Modalidad modalidadSeleccionada;
+    private String codModalidad;
+    private String modalidad;
+    private String codDep;
     @EJB
     DepartamentoFacade departamentoFacade;
     @EJB
     ModalidadFacade modalidadFacade;
     private String clase="Modalidad";
 
+    public String getCodModalidad() {
+        return codModalidad;
+    }
+
+    public void setCodModalidad(String codModalidad) {
+        this.codModalidad = codModalidad;
+    }
+
+    public String getModalidad() {
+        return modalidad;
+    }
+
+    public void setModalidad(String modalidad) {
+        this.modalidad = modalidad;
+    }
+
+    public String getCodDep() {
+        return codDep;
+    }
+
+    public void setCodDep(String codDep) {
+        this.codDep = codDep;
+    }
+    
     public List<Modalidad> getListaMadalidades() {
         return listaMadalidades;
     }
@@ -69,7 +96,9 @@ public class ModalidadBean {
     public void setModalidadFacade(ModalidadFacade modalidadFacade) {
         this.modalidadFacade = modalidadFacade;
     }
-    
+    public void nuevo(){
+        
+    }
 
     /**
      * Creates a new instance of ModalidadBean
