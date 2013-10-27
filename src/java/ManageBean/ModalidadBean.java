@@ -17,6 +17,7 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import pojo.Modalidad;
 
@@ -25,7 +26,7 @@ import pojo.Modalidad;
  * @author mateo
  */
 @ManagedBean(name="modalidadBean")
-@RequestScoped
+@SessionScoped
 public class ModalidadBean {
     
     private List<Modalidad>listaMadalidades;
@@ -137,6 +138,47 @@ public class ModalidadBean {
         }
     }
 
+    public void modificar() {
+        String codigoDepartamento = "";
+        boolean cambio = false;
+        try {
+            modalidadSeleccionada.setModalidad(modalidadSeleccionada.getModalidad().toUpperCase());
+            if(!modalidadSeleccionada.getCodDep().getCodDep().equals(codDep)){
+                codigoDepartamento =modalidadSeleccionada.getCodDep().getCodDep();
+                modalidadSeleccionada.setCodDep(this.departamentoFacade.findByCodep(codDep).get(0));
+                cambio=true;
+            }
+            this.modalidadFacade.edit(modalidadSeleccionada);
+            ModeloBean ont = (ModeloBean) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("modeloBean");
+            String nS = ont.getPrefijo();
+            OntModel modelo = ont.getModelOnt();
+            Individual modalidadI = modelo.getIndividual(nS + clase + modalidadSeleccionada.getCodModalidad());
+            DatatypeProperty codigo_mod = modelo.getDatatypeProperty(nS + "codigo_modalidad");
+            DatatypeProperty nombre_mod = modelo.getDatatypeProperty(nS + "nombre_modalidad");
+            modalidadI.setPropertyValue(codigo_mod, modelo.createTypedLiteral(modalidadSeleccionada.getCodModalidad()));
+            modalidadI.setPropertyValue(nombre_mod, modelo.createTypedLiteral(modalidadSeleccionada.getModalidad()));
+            if(cambio){
+                ObjectProperty pertenece = modelo.getObjectProperty(nS + "Es_del_departamento");
+                Individual departamento = modelo.getIndividual(nS + "Departamento" + codigoDepartamento);
+                modalidadI.removeProperty(pertenece, departamento);
+                departamento.removeProperty(pertenece.getInverse(), modalidadI);
+                departamento = modelo.getIndividual(nS + "Departamento" + codDep);
+                modalidadI.setPropertyValue(pertenece, departamento);
+                departamento.addProperty(pertenece.getInverse(), modalidadI);
+                
+            }
+            ont.guardarModelo(modelo);
+            reset();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("modalidad Modificada", ""));
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            FacesContext.getCurrentInstance().
+                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al modificar modalidad ", ""));
+        }
+
+
+    }
+
     /**
      * Creates a new instance of ModalidadBean
      */
@@ -145,5 +187,10 @@ public class ModalidadBean {
     @PostConstruct
     public void reset(){
         listaMadalidades=this.modalidadFacade.findAll();
+        this.codDep="";
+        this.nombreModalidad="";
+        this.codModalidad="";
+        this.modalidadSeleccionada=null;
+        this.listaModalidadesSeleccionda=null;
     }
 }
