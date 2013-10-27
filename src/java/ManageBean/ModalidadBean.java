@@ -18,7 +18,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import pojo.Departamento;
 import pojo.Modalidad;
 
 /**
@@ -33,23 +32,22 @@ public class ModalidadBean {
     private List<Modalidad>listaModalidadesSeleccionda;
     private Modalidad modalidadSeleccionada;
     private String codModalidad;
-    private String modalidad;
+    private String nombreModalidad;
     private String codDep;
-    private Departamento departamento;
+ 
     @EJB
     DepartamentoFacade departamentoFacade;
     @EJB
     ModalidadFacade modalidadFacade;
     private String clase="Modalidad";
 
-    public Departamento getDepartamento() {
-        return departamento;
+    public String getNombreModalidad() {
+        return nombreModalidad;
     }
 
-    public void setDepartamento(Departamento departamento) {
-        this.departamento = departamento;
+    public void setNombreModalidad(String nombreModalidad) {
+        this.nombreModalidad = nombreModalidad;
     }
-    
 
     public String getCodModalidad() {
         return codModalidad;
@@ -59,13 +57,7 @@ public class ModalidadBean {
         this.codModalidad = codModalidad;
     }
 
-    public String getModalidad() {
-        return modalidad;
-    }
 
-    public void setModalidad(String modalidad) {
-        this.modalidad = modalidad;
-    }
 
     public String getCodDep() {
         return codDep;
@@ -117,9 +109,9 @@ public class ModalidadBean {
 
     public void nuevo() {
         Modalidad modalidad = new Modalidad();
-        modalidad.setCodDep(departamento);
+        modalidad.setCodDep(this.departamentoFacade.findByCodep(codDep).get(0));
         modalidad.setCodModalidad(codModalidad);
-        modalidad.setModalidad(codModalidad);
+        modalidad.setModalidad(nombreModalidad.toUpperCase());
         try {
             this.modalidadFacade.create(modalidad);
             ModeloBean ont = (ModeloBean) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("modeloBean");
