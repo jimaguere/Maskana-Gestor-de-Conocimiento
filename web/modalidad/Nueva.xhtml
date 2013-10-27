@@ -31,18 +31,15 @@
                                          label="Nombre"
                                          value="#{modalidadBean.modalidad}"
                                          required="true"/>
-                            <h:outputLabel for="Descripcion"
-                                           value="Descripción"
-                                           styleClass="requiredLbl"/>
                             <h:outputLabel for="departamentos"
                                            value="Departamento"
                                            styleClass="requiredLbl"/>
-                            <p:selectOneMenu id="departamentos" value="#{lineaInvestigacionBean.codDep}" required="true">
+                            <p:selectOneMenu id="departamentos" value="#{modalidadBean.departamento}" required="true">
                                 <f:selectItem itemValue="" itemLabel="Selecione un Departamento"/>
                                 <f:selectItems  value="#{departamentoBean.listaDepartamento}"
                                                 var="dep"
                                                 itemLabel="#{dep.nombre}"
-                                                itemValue="#{dep.codDep}"
+                                                itemValue="#{dep}"
                                                 />
                             </p:selectOneMenu>
                             <h:panelGroup>
