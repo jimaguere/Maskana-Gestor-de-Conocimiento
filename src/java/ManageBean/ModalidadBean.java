@@ -124,7 +124,7 @@ public class ModalidadBean {
             DatatypeProperty nombre_mod = modelo.getDatatypeProperty(nS + "nombre_modalidad");
             ObjectProperty pertenece = modelo.getObjectProperty(nS + "Es_del_departamento");
             modalidadI.setPropertyValue(codigo_mod, modelo.createTypedLiteral(modalidad.getCodModalidad()));
-            modalidadI.setPropertyValue(nombre_mod, modelo.createTypedLiteral(modalidad.getCodModalidad()));
+            modalidadI.setPropertyValue(nombre_mod, modelo.createTypedLiteral(modalidad.getModalidad()));
             modalidadI.setPropertyValue(pertenece, departamentoI);
             departamentoI.addProperty(pertenece.getInverse(), modalidadI);
             ont.guardarModelo(modelo);
