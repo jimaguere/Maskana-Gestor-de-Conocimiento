@@ -4,6 +4,7 @@
  */
 package facadePojo;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,7 +23,20 @@ public class VocabularioFacade extends AbstractFacade<Vocabulario> {
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    public List<Object[]> findAllJaroWordsComplet(String query) {
+        try {
+            javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+            cq.select(cq.from(Vocabulario.class));
+            return getEntityManager().createNativeQuery("select distinct palabra,"
+                    + " jarowinkler((palabra) ,'" + query + "') as aceptacion"
+                    + " from vocabulario"
+                    + " where"
+                    + " jarowinkler(palabra,'" + query + "')>0.6 order by aceptacion desc").getResultList();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
+    }
     public VocabularioFacade() {
         super(Vocabulario.class);
     }
