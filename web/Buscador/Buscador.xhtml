@@ -5,7 +5,6 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core">
-   
         <ui:define name="top">
             <p:imageSwitch effect="fade"> 
                 <ui:repeat value="#{imageSwitchBean.images}" var="image">  
@@ -16,28 +15,29 @@
 
     <ui:define name="content">
         <h:form> 
-            
+            <h:outputLabel 
+                        value="Buscador Semantico"
+                        styleClass="requiredLbl"/>
             <h:panelGrid columns="1">
-                <h:selectOneRadio style="height: 50px">
+                <h:selectOneRadio style="height: 50px" value="#{buscador.tipoBusqueda}">
                     <f:selectItem itemLabel="Contenido" itemValue="1"/>  
                     <f:selectItem itemLabel="Titulo" itemValue="2" />  
                     <f:selectItem itemLabel="Autor" itemValue="3" />  
                 </h:selectOneRadio>                    
                 </h:panelGrid>
-                <h:panelGrid columns="2">
-                    <h:outputLabel 
-                        value="Buscar"
-                        styleClass="requiredLbl"/>
+                <h:panelGrid columns="1">
                     <p:autoComplete  
                         label="Buscar"
                         size="45"  
                         completeMethod= "#{buscador.completeGeneral}"
+                        value="#{buscador.cadenaBusqueda}"
                         />
                 </h:panelGrid>
                 <p:commandButton
                     value="Buscar"
                     ajax="false"
                     style="width: 150px"
+                    actionListener="#{buscador.buscar}"
                     />
             </h:form>
         </ui:define>

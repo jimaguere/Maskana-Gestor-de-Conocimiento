@@ -37,6 +37,32 @@ public class VocabularioFacade extends AbstractFacade<Vocabulario> {
             return null;
         }
     }
+    
+    public List<Object[]> findAllJaroWords(String query) {
+        try {
+            javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+            cq.select(cq.from(Vocabulario.class));
+            return getEntityManager().createNativeQuery("select distinct palabra,"
+                    + " jarowinkler((palabra) ,'" + query + "') as aceptacion"
+                    + " from vocabulario"
+                    + " where"
+                    + " jarowinkler(palabra,'" + query + "')>0.9 order by aceptacion desc").getResultList();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
+    }
+    
+    public Object findAllStopWords(String query) {
+        try {
+            javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+            cq.select(cq.from(Vocabulario.class));
+            return getEntityManager().createNativeQuery("SELECT ts_lexize('public.simple_dict',"
+                    + "'" + query + "');").getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
     public VocabularioFacade() {
         super(Vocabulario.class);
     }
