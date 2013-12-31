@@ -6,6 +6,13 @@
     height: 10%;
     border:0px solid #0b3e6f;background:#0b3e6f url("../img/dia.png") 50% 50% repeat;color:#ffffff;font-weight:bold;
 }
+#top2 {
+    position: relative;
+    padding: 0px;
+    width: 100%;
+    height: 26%;
+    border:0px solid #0b3e6f;background:#0b3e6f url("../img/dia.png") 50% 50% repeat;color:#ffffff;font-weight:bold;
+}
 
 #bottom {
     position: relative;
