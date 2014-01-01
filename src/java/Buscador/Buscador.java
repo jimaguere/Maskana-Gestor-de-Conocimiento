@@ -39,6 +39,8 @@ public class Buscador {
     private String palabra;
     private String resultados;
     private List<Tesis> lista;
+    private List<Tesis> selectedTesis;
+    private Tesis tesisSelecion;
     private OntologiaAcademica acad;
     private OntologiaAcademica acadAutor;
 
@@ -65,6 +67,31 @@ public class Buscador {
     public void setResultados(String resultados) {
         this.resultados = resultados;
     }
+
+    public List<Tesis> getLista() {
+        return lista;
+    }
+
+    public void setLista(List<Tesis> lista) {
+        this.lista = lista;
+    }
+
+    public List<Tesis> getSelectedTesis() {
+        return selectedTesis;
+    }
+
+    public void setSelectedTesis(List<Tesis> selectedTesis) {
+        this.selectedTesis = selectedTesis;
+    }
+
+    public Tesis getTesisSelecion() {
+        return tesisSelecion;
+    }
+
+    public void setTesisSelecion(Tesis tesisSelecion) {
+        this.tesisSelecion = tesisSelecion;
+    }
+    
 
     /**
      * Creates a new instance of Buscador
@@ -222,9 +249,10 @@ public class Buscador {
                 + "group by ?id_tg?Titulo?Signatura_Topografica?resumen?Trabajo_grado";
         this.lista = new ArrayList<Tesis>();
         prepararLista(consulta);
-        //String url = "Resultado.xhtml";
-        //FacesContext fc = FacesContext.getCurrentInstance();
-        //fc.getExternalContext().redirect(url);
+        System.out.println("tam:"+this.lista.size());
+        String url = "../faces/PlantillaResultado.xhtml";
+        FacesContext fc = FacesContext.getCurrentInstance();
+        fc.getExternalContext().redirect(url);
 
     }
     public void busquedaAutor() throws IOException {
@@ -271,9 +299,9 @@ public class Buscador {
                 + "order by ?nom";
         this.lista = new ArrayList<Tesis>();
         prepararLista(consulta);
-        //String url = "Resultado.xhtml";
-        //FacesContext fc = FacesContext.getCurrentInstance();
-        //fc.getExternalContext().redirect(url);    
+        String url = "../faces/PlantillaResultado.xhtml";
+        FacesContext fc = FacesContext.getCurrentInstance();
+        fc.getExternalContext().redirect(url);    
     }
 
     public void buscar() throws IOException {
