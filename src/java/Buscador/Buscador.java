@@ -163,6 +163,49 @@ public class Buscador {
             return null;
         }
     }
+    public void prepararLista1(String consulta) {
+        com.hp.hpl.jena.query.ResultSet results = acad.consultar(consulta);
+        if (!results.hasNext()) {
+            this.resultados = "No se encontraron resultados para: " + this.cadenaBusqueda;
+        } else {
+            this.resultados = "Resultados encontrados para: " + this.cadenaBusqueda;
+        }
+        while (results.hasNext()) {
+            QuerySolution soln = results.nextSolution();
+            String consultar = "PREFIX po1:<http://www.owl-ontologies.com/TesisGrado.owl#>  "
+                    + "select distinct "
+                    + "?nombre_persona?apellido_persona?calificacion"
+                    + " where{"
+                    + "<" + soln.get("Trabajo_grado").toString() + "> po1:Es_realizado?autor."
+                    + "?autor po1:nombre_persona?nombre_persona."
+                    + "?autor po1:apellido_persona?apellido_persona."
+                    + "?autor po1:calificacion?calificacion."
+                    + "}order by ?nombre_persona";
+            System.out.println(consultar);
+
+            com.hp.hpl.jena.query.ResultSet rs = acadAutor.consultar(consultar);
+            List<Autor> autor = new ArrayList<Autor>();
+            while (rs.hasNext()) {
+                QuerySolution soln1 = rs.nextSolution();
+                Autor auto = new Autor();
+                auto.setNombre(soln1.get("nombre_persona").toString().replace("^^http://www.w3.org/2001/XMLSchema#string", "") + " " + soln1.get("apellido_persona").toString().replace("^^http://www.w3.org/2001/XMLSchema#string", ""));
+                auto.setCalificacion(soln1.get("calificacion").toString().replace("^^http://www.w3.org/2001/XMLSchema#float", ""));
+                autor.add(auto);
+            }
+            Tesis tesis = new Tesis();
+            tesis.setIdTg(soln.get("id_tg").toString().replace("^^http://www.w3.org/2001/XMLSchema#int", ""));
+            tesis.setTitulo(soln.get("Titulo").toString().replace("^^http://www.w3.org/2001/XMLSchema#string", ""));
+            tesis.setSigTopografica(soln.get("Signatura_Topografica").toString().replace("^^http://www.w3.org/2001/XMLSchema#string", ""));
+            tesis.setAutor(autor);
+            tesis.setResumen(soln.get("resumen").toString().replace("@es", ""));
+            this.lista.add(tesis);
+            this.palabra = "";
+        }
+        if (!lista.isEmpty()) {
+            acad.terminar();
+            acadAutor.terminar();
+        }
+    }
 
     public void prepararLista(String consulta) {
         com.hp.hpl.jena.query.ResultSet results = acad.consultarAvanzada(consulta);
@@ -298,7 +341,7 @@ public class Buscador {
                 + "}\n"
                 + "order by ?nom";
         this.lista = new ArrayList<Tesis>();
-        prepararLista(consulta);
+        prepararLista1(consulta);
         String url = "../faces/PlantillaResultado.xhtml";
         FacesContext fc = FacesContext.getCurrentInstance();
         fc.getExternalContext().redirect(url);    
