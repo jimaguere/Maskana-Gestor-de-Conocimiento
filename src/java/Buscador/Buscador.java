@@ -8,19 +8,36 @@ import ManageBean.ModeloBean;
 import clases.Autor;
 import clases.OntologiaAcademica;
 import clases.Tesis;
+import com.hp.hpl.jena.ontology.DatatypeProperty;
+import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.ObjectProperty;
+import com.hp.hpl.jena.ontology.OntClass;
+import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import facadePojo.EstudianteFacade;
 import facadePojo.VocabularioFacade;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.context.FacesContext;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.util.Version;
 
 /**
  *
@@ -43,6 +60,26 @@ public class Buscador {
     private Tesis tesisSelecion;
     private OntologiaAcademica acad;
     private OntologiaAcademica acadAutor;
+    private IndexSearcher searcher;
+    private String contenido;
+
+    public String getContenido() {
+        return contenido;
+    }
+
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
+    }
+    
+    
+
+    public IndexSearcher getSearcher() {
+        return searcher;
+    }
+
+    public void setSearcher(IndexSearcher searcher) {
+        this.searcher = searcher;
+    }
 
     public String getTipoBusqueda() {
         return tipoBusqueda;
@@ -91,7 +128,6 @@ public class Buscador {
     public void setTesisSelecion(Tesis tesisSelecion) {
         this.tesisSelecion = tesisSelecion;
     }
-    
 
     /**
      * Creates a new instance of Buscador
@@ -108,6 +144,8 @@ public class Buscador {
         ModeloBean ont = (ModeloBean) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("modeloBean");
         acad.setModel(ont.getModelOnt());
         acadAutor.setModel(ont.getModelOnt());
+        searcher = ont.getSearcher();
+        contenido="1";
     }
 
     public List<String> completeGeneral(String query) {
@@ -163,6 +201,17 @@ public class Buscador {
             return null;
         }
     }
+
+    public String depurarContenido() {
+        String[] busquedaContenido = this.cadenaBusqueda.split(" ");
+        String buscar = "";
+        System.out.println("depurar contenido");
+        for (int i = 0; i < busquedaContenido.length; i++) {
+            buscar=buscar+"+"+busquedaContenido[i]+"~ ";
+        }
+        return buscar.substring(0,buscar.length()-1);
+    }
+
     public void prepararLista1(String consulta) {
         com.hp.hpl.jena.query.ResultSet results = acad.consultar(consulta);
         if (!results.hasNext()) {
@@ -292,12 +341,13 @@ public class Buscador {
                 + "group by ?id_tg?Titulo?Signatura_Topografica?resumen?Trabajo_grado";
         this.lista = new ArrayList<Tesis>();
         prepararLista(consulta);
-        System.out.println("tam:"+this.lista.size());
+        System.out.println("tam:" + this.lista.size());
         String url = "../faces/PlantillaResultado.xhtml";
         FacesContext fc = FacesContext.getCurrentInstance();
         fc.getExternalContext().redirect(url);
 
     }
+
     public void busquedaAutor() throws IOException {
         if (this.cadenaBusqueda == null) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -344,16 +394,87 @@ public class Buscador {
         prepararLista1(consulta);
         String url = "../faces/PlantillaResultado.xhtml";
         FacesContext fc = FacesContext.getCurrentInstance();
-        fc.getExternalContext().redirect(url);    
+        fc.getExternalContext().redirect(url);
+    }
+
+    public void busquedaContenido() throws ParseException, IOException {
+        if (this.cadenaBusqueda == null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage("No Encontraron resultados para su busqueda", ""));
+            return;
+        }
+       // String contenido = this.depurarContenido();
+         String cont=this.cadenaBusqueda;
+        if(this.contenido.equals("1")){
+            cont=this.depurarContenido();
+            System.out.println("si:"+cont.trim());
+     
+        }
+        QueryParser parser = new QueryParser(Version.LUCENE_46,
+                "contenido",
+                new StandardAnalyzer(
+                Version.LUCENE_46));
+        parser.setAllowLeadingWildcard(true);
+        Query query = parser.parse(cont);
+        TopDocs hits = searcher.search(query, 30);
+        this.lista = new ArrayList<Tesis>();
+        System.out.println("resultado:"+hits.totalHits);
+        ModeloBean ont = (ModeloBean) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("modeloBean");
+        String nS = ont.getPrefijo();
+        OntModel modelo = ont.getModelOnt();
+        String prefijo="^^http://www.w3.org/2001/XMLSchema#string";
+        OntClass claseTesis = modelo.getOntClass(nS + "Trabajo_grado");
+        ObjectProperty pAutor = modelo.getObjectProperty(nS + "Es_realizado");
+        for (ScoreDoc scoreDoc : hits.scoreDocs) {
+            try{
+            Document doc = searcher.doc(scoreDoc.doc);
+            List<Autor> autor = new ArrayList<Autor>();
+            Tesis tesis = new Tesis();
+            this.lista.add(tesis);
+            Individual tg = modelo.createIndividual(nS +"tg"+doc.get("id").replaceAll(".pdf", "").replace(".PDF", ""), claseTesis);
+            tesis.setIdTg(doc.get("id").replaceAll(".pdf", "").replace(".PDF", ""));
+            tesis.setTitulo(tg.getPropertyValue(modelo.getDatatypeProperty(nS + "titulo")).toString().replace(prefijo,""));
+            tesis.setResumen(modelo.getDatatypeProperty(nS + "resumen").toString().replace(prefijo,""));
+            tesis.setSigTopografica(modelo.getDatatypeProperty(nS + "signatura_topografica").toString().replace(prefijo,""));
+            String consultar = "PREFIX po1:<http://www.owl-ontologies.com/TesisGrado.owl#>  "
+                    + "select distinct "
+                    + "?nombre_persona?apellido_persona?calificacion"
+                    + " where{"
+                    + "<" + tg.toString() + "> po1:Es_realizado?autor."
+                    + "?autor po1:nombre_persona?nombre_persona."
+                    + "?autor po1:apellido_persona?apellido_persona."
+                    + "?autor po1:calificacion?calificacion."
+                    + "}order by ?nombre_persona";
+            com.hp.hpl.jena.query.ResultSet rs = acadAutor.consultar(consultar);
+            while (rs.hasNext()) {
+                QuerySolution soln1 = rs.nextSolution();
+                Autor auto = new Autor();
+                auto.setNombre(soln1.get("nombre_persona").toString().replace("^^http://www.w3.org/2001/XMLSchema#string", "") + " " + soln1.get("apellido_persona").toString().replace("^^http://www.w3.org/2001/XMLSchema#string", ""));
+                auto.setCalificacion(soln1.get("calificacion").toString().replace("^^http://www.w3.org/2001/XMLSchema#float", ""));
+                autor.add(auto);
+            }
+            tesis.setAutor(autor);
+            System.out.println(doc.get("id"));
+            }catch(Exception e){}
+        }
+        String url = "../faces/PlantillaResultado.xhtml";
+        FacesContext fc = FacesContext.getCurrentInstance();
+        fc.getExternalContext().redirect(url);
     }
 
     public void buscar() throws IOException {
-        if(this.tipoBusqueda.equals("2")){
+        if (this.tipoBusqueda.equals("1")) {
+            try {
+                this.busquedaContenido();
+            } catch (ParseException ex) {
+                Logger.getLogger(Buscador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (this.tipoBusqueda.equals("2")) {
             this.busquedaTitulo();
         }
-        if(this.tipoBusqueda.equals("3")){
+        if (this.tipoBusqueda.equals("3")) {
             this.busquedaAutor();
         }
     }
-    
 }
