@@ -52,6 +52,26 @@ public class VocabularioFacade extends AbstractFacade<Vocabulario> {
             return null;
         }
     }
+    public List<Object[]>findAllJaraWordsContent(String query){
+        try{
+            javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+            cq.select(cq.from(Vocabulario.class));
+            return getEntityManager().createNativeQuery("select distinct palabra,"
+                    + " jarowinkler((palabra) ,'" + query + "') as aceptacion"
+                    + " from vocabulario"
+                    + " where"
+                    + " jarowinkler(palabra,'" + query + "')>0.9 "
+                    + " union"
+                    + " select distinct meaning as palabra,"
+                    +" jarowinkler((meaning) ,'" + query + "') as aceptacion"
+                    + " from significado"
+                    + " where"
+                    + " jarowinkler(meaning,'" + query + "')>0.9"
+                    + "order by aceptacion desc").getResultList();
+        }catch(Exception e){
+            return null;
+        }
+    }
     
     public Object findAllStopWords(String query) {
         try {
