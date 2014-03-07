@@ -24,7 +24,7 @@ public class Searcher {
     public static void main(String[] args) throws IllegalArgumentException,
             IOException, org.apache.lucene.queryparser.classic.ParseException {
         String indexDir = "/home/mateo/Documentos/Indice";
-        String q = "sistema +informaci";
+        String q = "aplicación  ofrece  la  ayuda  correspondiente  en  cuanto  a  su  manejo  e instalación  y  además  permite  descargar  los  manuales  para  edición";
         search(indexDir, q);
     }
 
