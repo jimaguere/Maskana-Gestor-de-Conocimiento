@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="./../resources/css/default.css" rel="stylesheet" type="text/css" />
+        <link href="./../resources/css/cssLayout.css" rel="stylesheet" type="text/css" />
+        <link href="./../resources/css/login.css" rel="stylesheet" type="text/css" />
+        <title>Buscador</title>
+    </h:head>
+
+    <h:body style="background-color: #0b3e6f">
+        <center>
+            <p:layout fullPage="false" style="width: 80%;height:500px;">
+
+                <p:layoutUnit position="center">
+                    <div id="top2" class="top">
+                        <center>
+                            <ui:insert name="top">Top</ui:insert>
+                        </center>
+                    </div>
+
+                    <div id="content" class="center_content"><br></br><br></br>
+                        <p:panel header="Buscador Semantico">
+                            <ui:insert name="content">Content</ui:insert>
+                        </p:panel>
+                        <center>
+                            <h2> Universidad de Narino</h2>
+                        </center>
+                    </div>
+
+                </p:layoutUnit>
+
+            </p:layout>
+        </center>
+    </h:body>
+
+</html>
+
