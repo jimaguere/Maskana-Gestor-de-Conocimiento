@@ -8,13 +8,11 @@ import ManageBean.ModeloBean;
 import clases.Autor;
 import clases.OntologiaAcademica;
 import clases.Tesis;
-import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import facadePojo.EstudianteFacade;
 import facadePojo.VocabularioFacade;
 import java.io.IOException;
@@ -128,6 +126,30 @@ public class Buscador {
     public void setTesisSelecion(Tesis tesisSelecion) {
         this.tesisSelecion = tesisSelecion;
     }
+    public String asignarTesis(Tesis tesis){
+       this.tesisSelecion=tesis;
+                String consulta = "PREFIX po1:<http://www.owl-ontologies.com/TesisGrado.owl#>  \n"
+                + "select  \n"
+                + "?id_tg?Titulo?Signatura_Topografica?resumen?Trabajo_grado (count(?id_tg)as ?c)\n"
+                + " where{\n"
+                + "?Trabajo_grado po1:Es_realizado ?autor.\n"
+                + "?Trabajo_grado po1:titulo?Titulo.\n"
+                + "?Trabajo_grado po1:id_trabajo?id_tg.\n"
+                + "?Trabajo_grado po1:resumen?resumen.\n"
+                + "?Trabajo_grado po1:signatura_topografica?Signatura_Topografica.\n"
+                + "<http://www.owl-ontologies.com/TesisGrado.owl#tg"+this.tesisSelecion.getIdTg()+">po1:tiene ?keyword.\n"
+                + "?keyword po1:describen?Trabajo_grado."
+                + "<http://www.owl-ontologies.com/TesisGrado.owl#tg"+this.tesisSelecion.getIdTg()+">po1:id_trabajo ?id_tg_or."
+                + "FILTER (\n"
+                + "?id_tg_or!=?id_tg"
+                + ")\n"
+                + "}\n"
+                + "group by ?id_tg?Titulo?Signatura_Topografica?resumen?Trabajo_grado";
+                System.out.println(consulta);
+        this.tesisSelecion.setTesisRelacionadas(relacionartesis(consulta));
+        System.out.println(tesisSelecion.getTesisRelacionadas().size());
+        return "PlantillaResultado.xhtml";
+    }
 
     /**
      * Creates a new instance of Buscador
@@ -176,7 +198,6 @@ public class Buscador {
 
     public List<Object[]> depurarAutor() {
         this.palabra = this.cadenaBusqueda.replaceAll("'", "");
-        String[] busqueda = this.palabra.split(" ");
         String buscar = "";
         return estudianteFacade.findAllJaro(this.palabra);
     }
@@ -209,6 +230,7 @@ public class Buscador {
         for (int i = 0; i < busquedaContenido.length; i++) {
             buscar=buscar+"+"+busquedaContenido[i]+"~ ";
         }
+        System.out.println("ya esta:"+buscar.substring(0,buscar.length()-1));
         return buscar.substring(0,buscar.length()-1);
     }
 
@@ -396,7 +418,50 @@ public class Buscador {
         FacesContext fc = FacesContext.getCurrentInstance();
         fc.getExternalContext().redirect(url);
     }
+    
 
+    public List<Tesis> relacionartesis(String consulta) {
+        List<Tesis>listaTesis=new ArrayList<Tesis>();
+        com.hp.hpl.jena.query.ResultSet results = acad.consultarAvanzada(consulta);
+        while (results.hasNext()) {
+            QuerySolution soln = results.nextSolution();
+            String consultar = "PREFIX po1:<http://www.owl-ontologies.com/TesisGrado.owl#>  "
+                    + "select distinct "
+                    + "?nombre_persona?apellido_persona?calificacion"
+                    + " where{"
+                    + "<" + soln.get("Trabajo_grado").toString() + "> po1:Es_realizado?autor."
+                    + "?autor po1:nombre_persona?nombre_persona."
+                    + "?autor po1:apellido_persona?apellido_persona."
+                    + "?autor po1:calificacion?calificacion."
+                    + "}order by ?nombre_persona";
+            com.hp.hpl.jena.query.ResultSet rs = acadAutor.consultar(consultar);
+            List<Autor> autor = new ArrayList<Autor>();
+            while (rs.hasNext()) {
+                QuerySolution soln1 = rs.nextSolution();
+                Autor auto = new Autor();
+                auto.setNombre(soln1.get("nombre_persona").toString().replace("^^http://www.w3.org/2001/XMLSchema#string", "") + " " + soln1.get("apellido_persona").toString().replace("^^http://www.w3.org/2001/XMLSchema#string", ""));
+                auto.setCalificacion(soln1.get("calificacion").toString().replace("^^http://www.w3.org/2001/XMLSchema#float", ""));
+                autor.add(auto);
+            }
+            Tesis tesis = new Tesis();
+            tesis.setIdTg(soln.get("id_tg").toString().replace("^^http://www.w3.org/2001/XMLSchema#int", ""));
+            tesis.setTitulo(soln.get("Titulo").toString().replace("^^http://www.w3.org/2001/XMLSchema#string", ""));
+            tesis.setSigTopografica(soln.get("Signatura_Topografica").toString().replace("^^http://www.w3.org/2001/XMLSchema#string", ""));
+            tesis.setAutor(autor);
+            tesis.setRanking(Integer.parseInt(soln.get("c").toString().replace("^^http://www.w3.org/2001/XMLSchema#integer", "")));
+            tesis.setResumen(soln.get("resumen").toString().replace("@es", ""));
+            listaTesis.add(tesis);
+        
+
+        }
+        if (!lista.isEmpty()) {
+            acad.terminar();
+            acadAutor.terminar();
+        }
+        Collections.sort(listaTesis);
+        return listaTesis;
+    }
+            
     public void busquedaContenido() throws ParseException, IOException {
         if (this.cadenaBusqueda == null) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -434,8 +499,8 @@ public class Buscador {
             Individual tg = modelo.createIndividual(nS +"tg"+doc.get("id").replaceAll(".pdf", "").replace(".PDF", ""), claseTesis);
             tesis.setIdTg(doc.get("id").replaceAll(".pdf", "").replace(".PDF", ""));
             tesis.setTitulo(tg.getPropertyValue(modelo.getDatatypeProperty(nS + "titulo")).toString().replace(prefijo,""));
-            tesis.setResumen(modelo.getDatatypeProperty(nS + "resumen").toString().replace(prefijo,""));
-            tesis.setSigTopografica(modelo.getDatatypeProperty(nS + "signatura_topografica").toString().replace(prefijo,""));
+            tesis.setResumen(tg.getPropertyValue(modelo.getDatatypeProperty(nS + "resumen")).toString().replace(prefijo,""));
+            tesis.setSigTopografica(tg.getPropertyValue(modelo.getDatatypeProperty(nS + "signatura_topografica")).toString().replace(prefijo,""));
             String consultar = "PREFIX po1:<http://www.owl-ontologies.com/TesisGrado.owl#>  "
                     + "select distinct "
                     + "?nombre_persona?apellido_persona?calificacion"
