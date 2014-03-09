@@ -73,8 +73,8 @@
                                         </p:dataList>
                                     </p:column>
                                     <p:column style="width:4%">  
-                                        <p:commandButton id="selectButton" update=":form:display" oncomplete="tesisDialog.show()" icon="ui-icon-search" title="View">  
-                                            <f:setPropertyActionListener value="#{item}" target="#{buscador.tesisSelecion}" />  
+                                        <p:commandButton id="selectButton" update=":form:display" oncomplete="tesisDialog.show()" icon="ui-icon-search" title="View" action="#{buscador.asignarTesis(item)}">  
+                                           
                                         </p:commandButton>  
                                     </p:column>  
                                 </p:dataTable>
@@ -95,6 +95,15 @@
                                         <p:column  headerText="Calificacion">
                                             #{autores.calificacion}
                                         </p:column>
+                                    </p:dataTable><br></br>
+                                    <p:dataTable value="#{buscador.tesisSelecion.tesisRelacionadas}" var="tesisRel">
+                                        <f:facet name="header">
+                                            Trabajos Relacionados
+                                        </f:facet>
+                                        <p:column  headerText="Titulo">
+                                            #{tesisRel.titulo}
+                                        </p:column>
+      
                                     </p:dataTable><br></br>
                                     <a href="./resources/pdf/#{buscador.tesisSelecion.idTg}.pdf">
                                         <p:graphicImage value="/resources/img/pdf.gif" height="10%" width="5%" />
