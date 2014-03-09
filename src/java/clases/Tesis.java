@@ -17,7 +17,16 @@ public class Tesis implements Comparable<Tesis> {
     private List<Autor>autor;
     private String resumen;
     private int ranking;
+    private List<Tesis> tesisRelacionadas;
 
+    public List<Tesis> getTesisRelacionadas() {
+        return tesisRelacionadas;
+    }
+
+    public void setTesisRelacionadas(List<Tesis> tesisRelacionadas) {
+        this.tesisRelacionadas = tesisRelacionadas;
+    }
+ 
     public int getRanking() {
         return ranking;
     }
