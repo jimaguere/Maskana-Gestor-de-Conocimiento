@@ -110,7 +110,6 @@ public class UsuarioLogin {
         Usuario user = usuarios.get(0);
         escrituras=user.getUsuarioAplicacionList();
         if (user.getClaveUsuario().equals(md5(this.clave))) {
-            context.addMessage(null, new FacesMessage("Login Correcto", "Bienvenido"));
             this.login = true;
             context.getExternalContext().redirect("Menu.xhtml");
         } else {
