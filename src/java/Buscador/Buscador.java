@@ -148,7 +148,7 @@ public class Buscador {
                 System.out.println(consulta);
         this.tesisSelecion.setTesisRelacionadas(relacionartesis(consulta));
         System.out.println(tesisSelecion.getTesisRelacionadas().size());
-        return "PlantillaResultado.xhtml";
+        return "Resultado.xhtml";
     }
 
     /**
@@ -468,12 +468,9 @@ public class Buscador {
             context.addMessage(null, new FacesMessage("No Encontraron resultados para su busqueda", ""));
             return;
         }
-       // String contenido = this.depurarContenido();
-         String cont=this.cadenaBusqueda;
+        String cont=this.cadenaBusqueda;
         if(this.contenido.equals("1")){
             cont=this.depurarContenido();
-            System.out.println("si:"+cont.trim());
-     
         }
         QueryParser parser = new QueryParser(Version.LUCENE_46,
                 "contenido",
