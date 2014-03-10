@@ -14,38 +14,36 @@
     </ui:define>
 
     <ui:define name="content">
-        <h:form id="form"> 
-            
-                <h:panelGrid columns="1">  
-                    <h:selectOneRadio style="height: 50px" value="#{buscador.tipoBusqueda}">
-                        <f:selectItem itemLabel="Contenido" itemValue="1"/>  
-                        <f:selectItem itemLabel="Título" itemValue="2" />  
-                        <f:selectItem itemLabel="Autor" itemValue="3" />  
-                        <p:ajax update="@form" event="change" process="@this" />
-                    </h:selectOneRadio>                    
-                </h:panelGrid>
-                <h:panelGrid columns="2" rendered="#{buscador.tipoBusqueda==1}">
-                    <h:outputText value="Busqueda:" />
-                    <h:selectOneRadio style="height: 50px" value="#{buscador.contenido}">
-                        <f:selectItem itemLabel="Todo" itemValue="1"/>  
-                        <f:selectItem itemLabel="Alguno" itemValue="2" />  
-                    </h:selectOneRadio>  
-                </h:panelGrid>
-                <h:panelGrid columns="1">
-                    <p:autoComplete  styleClass="buscador"
-                        label="Buscar"
-                        size="45"
-                        completeMethod= "#{buscador.completeGeneral}"
-                        value="#{buscador.cadenaBusqueda}"
-                        />
-                </h:panelGrid>
-                <p:commandButton
-                    value="Buscar"
-                    ajax="false"
-                    style="width: 150px"
-                    actionListener="#{buscador.buscar}"
-                    />
-            
+        <h:form id="form">  
+            <h:selectOneRadio style="height: 50px" value="#{buscador.tipoBusqueda}">
+                <f:selectItem itemLabel="Contenido" itemValue="1"/>  
+                <f:selectItem itemLabel="Título" itemValue="2" />  
+                <f:selectItem itemLabel="Autor" itemValue="3" />  
+                <p:ajax update="@form" event="change" process="@this" />
+            </h:selectOneRadio>                              
+        
+            <h:panelGrid columns="1">
+                <p:autoComplete  styleClass="buscador"
+                                 label="Buscar"
+                                 size="45"
+                                 completeMethod= "#{buscador.completeGeneral}"
+                                 value="#{buscador.cadenaBusqueda}"
+                                 />
+            </h:panelGrid>
+            <h:panelGrid columns="2" rendered="#{buscador.tipoBusqueda==1}">
+                <h:outputText value="Busqueda:" />
+                <h:selectOneRadio style="height: 50px" value="#{buscador.contenido}">
+                    <f:selectItem itemLabel="Todo" itemValue="1"/>  
+                    <f:selectItem itemLabel="Alguno" itemValue="2" />  
+                </h:selectOneRadio>  
+            </h:panelGrid>
+            <p:commandButton
+                value="Buscar"
+                ajax="false"
+                style="width: 150px"
+                actionListener="#{buscador.buscar}"
+                />
+
         </h:form>
     </ui:define>
 
