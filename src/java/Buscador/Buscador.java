@@ -364,7 +364,7 @@ public class Buscador {
         this.lista = new ArrayList<Tesis>();
         prepararLista(consulta);
         System.out.println("tam:" + this.lista.size());
-        String url = "../faces/PlantillaResultado.xhtml";
+        String url = "./Resultado.xhtml";
         FacesContext fc = FacesContext.getCurrentInstance();
         fc.getExternalContext().redirect(url);
 
@@ -414,7 +414,7 @@ public class Buscador {
                 + "order by ?nom";
         this.lista = new ArrayList<Tesis>();
         prepararLista1(consulta);
-        String url = "../faces/PlantillaResultado.xhtml";
+        String url = "./Resultado.xhtml";
         FacesContext fc = FacesContext.getCurrentInstance();
         fc.getExternalContext().redirect(url);
     }
@@ -522,7 +522,7 @@ public class Buscador {
             System.out.println(doc.get("id"));
             }catch(Exception e){}
         }
-        String url = "../faces/PlantillaResultado.xhtml";
+        String url = "./Resultado.xhtml";
         FacesContext fc = FacesContext.getCurrentInstance();
         fc.getExternalContext().redirect(url);
     }
