@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='iso-8859-1' ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <title>Trabajo de Grado</title>
+        <link href="./../resources/css/default.css" rel="stylesheet" type="text/css" />
+        <meta content='text/html; charset=iso-8859-1' http-equiv="Content-Type"/>
+    </h:head>
+    <body>
+    <p:layout fullPage="true">  
+
+        <p:layoutUnit position="north" size="100" header="Información Trabajo de Grado" resizable="false" closable="false" collapsible="false">   
+            <h:panelGrid columns="1">
+                <h:outputText value="Título: #{buscador.tesisSelecion.titulo}"/>
+                <h:outputText value="Signatura Topografica: #{buscador.tesisSelecion.sigTopografica}"></h:outputText>    
+                <h:outputText value="Número de visitas: "/>
+            </h:panelGrid>
+        </p:layoutUnit>  
+
+        <p:layoutUnit position="west" size="300" header="Autores">  
+            <p:dataList value="#{buscador.tesisSelecion.autor}" var="aut" type="ordered">  
+                #{aut.nombre}, Calificación :#{aut.calificacion}  
+            </p:dataList>  
+        </p:layoutUnit>  
+
+        <p:layoutUnit position="east" size="400" header="Trabajos Relacionados">  
+            <p:dataList value="#{buscador.tesisSelecion.tesisRelacionadas}" var="tesis" type="ordered">  
+                <h:outputLink value="" title="#{tesis.sigTopografica}">#{tesis.titulo}</h:outputLink> 
+               
+           </p:dataList>  
+        </p:layoutUnit>  
+
+        <p:layoutUnit position="center">  
+            <p:media value="../resources/pdf/#{buscador.tesisSelecion.idTg}.pdf" width="100%" height="100%">  
+                Su navegador no puede mostrar documentos pdf, <h:outputLink value="../resources/pdf/#{buscador.tesisSelecion.idTg}.pdf">click aqui</h:outputLink> para iniciar la descarga.  
+            </p:media> 
+
+        </p:layoutUnit> 
+    </p:layout>
+</body>
+</html>
