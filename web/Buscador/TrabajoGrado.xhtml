@@ -23,17 +23,23 @@ and open the template in the editor.
             </h:panelGrid>
         </p:layoutUnit>  
 
-        <p:layoutUnit position="west" size="250" header="Autores">  
-            <p:dataList value="#{buscador.tesisSelecion.autor}" var="aut" type="ordered">  
-                #{aut.nombre}, Calificación :#{aut.calificacion}  
-            </p:dataList>  
+        <p:layoutUnit position="west" size="250">  
+            <p:panel header="Autores">
+                <p:dataList value="#{buscador.tesisSelecion.autor}" var="aut" type="ordered">  
+                    #{aut.nombre}, Calificación :#{aut.calificacion}  
+                </p:dataList>
+            </p:panel>
+            <p:panel header="Director">
+                <p:dataList value="#{buscador.tesisSelecion.director}" var="dir" type="ordered">  
+                    #{dir.nombres} #{dir.apellidos} 
+                </p:dataList>
+            </p:panel>
         </p:layoutUnit>  
 
         <p:layoutUnit position="east" size="400" header="Trabajos Relacionados">  
             <p:dataList value="#{buscador.tesisSelecion.tesisRelacionadas}" var="tesis" type="ordered">  
-                <h:outputLink value="" title="#{tesis.sigTopografica}">#{tesis.titulo}</h:outputLink> 
-               
-           </p:dataList>  
+                <h:outputLink value="" title="#{tesis.sigTopografica}">#{tesis.titulo}</h:outputLink>      
+            </p:dataList>  
         </p:layoutUnit>  
 
         <p:layoutUnit position="center">  
