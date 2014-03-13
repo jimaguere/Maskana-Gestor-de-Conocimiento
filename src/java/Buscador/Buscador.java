@@ -145,10 +145,8 @@ public class Buscador {
                 + ")\n"
                 + "}\n"
                 + "group by ?id_tg?Titulo?Signatura_Topografica?resumen?Trabajo_grado";
-                System.out.println(consulta);
-        this.tesisSelecion.setTesisRelacionadas(relacionartesis(consulta));
-        System.out.println(tesisSelecion.getTesisRelacionadas().size());
-        return "Resultado.xhtml";
+        this.tesisSelecion.setTesisRelacionadas(relacionartesis(consulta).subList(0, 10));
+        return "TrabajoGrado.xhtml";
     }
 
     /**
@@ -223,12 +221,23 @@ public class Buscador {
         }
     }
 
-    public String depurarContenido() {
+    public String depurarContenidoTodo() {
         String[] busquedaContenido = this.cadenaBusqueda.split(" ");
         String buscar = "";
         System.out.println("depurar contenido");
         for (int i = 0; i < busquedaContenido.length; i++) {
             buscar=buscar+"+"+busquedaContenido[i]+"~ ";
+        }
+        System.out.println("ya esta:"+buscar.substring(0,buscar.length()-1));
+        return buscar.substring(0,buscar.length()-1);
+    }
+    
+     public String depurarContenidoAlguno() {
+        String[] busquedaContenido = this.cadenaBusqueda.split(" ");
+        String buscar = "";
+        System.out.println("depurar contenido");
+        for (int i = 0; i < busquedaContenido.length; i++) {
+            buscar=buscar+""+busquedaContenido[i]+"~ ";
         }
         System.out.println("ya esta:"+buscar.substring(0,buscar.length()-1));
         return buscar.substring(0,buscar.length()-1);
@@ -470,7 +479,9 @@ public class Buscador {
         }
         String cont=this.cadenaBusqueda;
         if(this.contenido.equals("1")){
-            cont=this.depurarContenido();
+            cont=this.depurarContenidoTodo();
+        }else{
+            cont=this.depurarContenidoAlguno();
         }
         QueryParser parser = new QueryParser(Version.LUCENE_46,
                 "contenido",
