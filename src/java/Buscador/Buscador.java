@@ -6,6 +6,7 @@ package Buscador;
 
 import ManageBean.ModeloBean;
 import clases.Autor;
+import clases.Director;
 import clases.OntologiaAcademica;
 import clases.Tesis;
 import com.hp.hpl.jena.ontology.Individual;
@@ -44,7 +45,6 @@ import org.apache.lucene.util.Version;
 @ManagedBean(name = "buscador")
 @ApplicationScoped
 public class Buscador {
-
     @EJB
     VocabularioFacade vocabularioFacadel;
     @EJB
@@ -146,6 +146,7 @@ public class Buscador {
                 + "}\n"
                 + "group by ?id_tg?Titulo?Signatura_Topografica?resumen?Trabajo_grado";
         this.tesisSelecion.setTesisRelacionadas(relacionartesis(consulta).subList(0, 10));
+        this.tesisSelecion.setDirector(optenerDirectorTesis(this.tesisSelecion));
         return "TrabajoGrado.xhtml";
     }
 
@@ -426,6 +427,27 @@ public class Buscador {
         String url = "./Resultado.xhtml";
         FacesContext fc = FacesContext.getCurrentInstance();
         fc.getExternalContext().redirect(url);
+    }
+    
+    public List<Director> optenerDirectorTesis(Tesis tesis){
+        List<Director> listaDirector=new ArrayList<Director>();
+        String consulta = "PREFIX po1:<http://www.owl-ontologies.com/TesisGrado.owl#>  "
+                    + "select distinct "
+                    + "?nombre_persona?apellido_persona"
+                    + " where{"
+                    + "<http://www.owl-ontologies.com/TesisGrado.owl#tg"+tesis.getIdTg()+">po1:Es_calificado ?director.\n"
+                    + "?director po1:nombre_persona?nombre_persona."
+                    + "?director po1:apellido_persona?apellido_persona."
+                    + "}order by ?nombre_persona";
+        com.hp.hpl.jena.query.ResultSet results = acad.consultarAvanzada(consulta);
+         while (results.hasNext()) {
+                QuerySolution soln = results.nextSolution();
+                Director director = new Director();
+                director.setNombres(soln.get("nombre_persona").toString().replace("^^http://www.w3.org/2001/XMLSchema#string", ""));
+                director.setApellidos(soln.get("apellido_persona").toString().replace("^^http://www.w3.org/2001/XMLSchema#string", ""));
+                listaDirector.add(director);
+            }
+        return listaDirector;
     }
     
 
