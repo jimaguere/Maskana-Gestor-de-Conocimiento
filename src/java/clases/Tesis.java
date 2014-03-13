@@ -18,6 +18,7 @@ public class Tesis implements Comparable<Tesis> {
     private String resumen;
     private int ranking;
     private List<Tesis> tesisRelacionadas;
+    private List<Director>director;
 
     public List<Tesis> getTesisRelacionadas() {
         return tesisRelacionadas;
@@ -74,6 +75,16 @@ public class Tesis implements Comparable<Tesis> {
     public void setResumen(String resumen) {
         this.resumen = resumen;
     }
+
+    public List<Director> getDirector() {
+        return director;
+    }
+
+    public void setDirector(List<Director> director) {
+        this.director = director;
+    }
+    
+    
     
     @Override
     public int compareTo(Tesis t) {
