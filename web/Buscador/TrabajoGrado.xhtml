@@ -37,8 +37,8 @@ and open the template in the editor.
         </p:layoutUnit>  
 
         <p:layoutUnit position="east" size="400" header="Trabajos Relacionados">  
-            <p:dataList value="#{buscador.tesisSelecion.tesisRelacionadas}" var="tesis" type="ordered">  
-                <h:outputLink value="" title="#{tesis.sigTopografica}">#{tesis.titulo}</h:outputLink>      
+            <p:dataList value="#{buscador.tesisSelecion.tesisRelacionadas}" var="tesis" type="ordered">               
+                <h:commandLink  title="#{tesis.sigTopografica}">#{tesis.titulo}</h:commandlink>    
             </p:dataList>  
         </p:layoutUnit>  
 
