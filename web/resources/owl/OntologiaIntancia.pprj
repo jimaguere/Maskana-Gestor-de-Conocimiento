@@ -1,4 +1,4 @@
-; Thu Aug 29 16:56:56 COT 2013
+; Thu Mar 13 12:42:36 COT 2014
 ; 
 ;+ (version "3.5")
 ;+ (build "Build 663")
@@ -6,11 +6,11 @@
 ([BROWSER_SLOT_NAMES] of  Property_List
 
 	(properties
-		[OntologiaIntancia_ProjectKB_Class55]
-		[OntologiaIntancia_ProjectKB_Class56]
-		[OntologiaIntancia_ProjectKB_Class57]
-		[OntologiaIntancia_ProjectKB_Class58]
-		[OntologiaIntancia_ProjectKB_Class59]))
+		[OntologiaIntancia_ProjectKB_Class90]
+		[OntologiaIntancia_ProjectKB_Class91]
+		[OntologiaIntancia_ProjectKB_Class92]
+		[OntologiaIntancia_ProjectKB_Class93]
+		[OntologiaIntancia_ProjectKB_Class94]))
 
 ([CLSES_TAB] of  Widget
 
@@ -5551,31 +5551,6 @@
 ([OntologiaIntancia_ProjectKB_Class54] of  Property_List
 )
 
-([OntologiaIntancia_ProjectKB_Class55] of  String
-
-	(name ":INSTANCE-ANNOTATION")
-	(string_value "%3AANNOTATION-TEXT"))
-
-([OntologiaIntancia_ProjectKB_Class56] of  String
-
-	(name "http://www.w3.org/2002/07/owl#Class")
-	(string_value "%3ANAME"))
-
-([OntologiaIntancia_ProjectKB_Class57] of  String
-
-	(name ":PAL-CONSTRAINT")
-	(string_value "%3APAL-NAME"))
-
-([OntologiaIntancia_ProjectKB_Class58] of  String
-
-	(name ":META-CLASS")
-	(string_value "%3ANAME"))
-
-([OntologiaIntancia_ProjectKB_Class59] of  String
-
-	(name "http://www.w3.org/2002/07/owl#Thing")
-	(string_value "%3ANAME"))
-
 ([OntologiaIntancia_ProjectKB_Class6] of  Property_List
 )
 
@@ -5593,6 +5568,31 @@
 	(is_hidden TRUE)
 	(property_list [OntologiaIntancia_ProjectKB_Class10])
 	(widget_class_name "edu.stanford.smi.protegex.server_changes.prompt.UsersTab"))
+
+([OntologiaIntancia_ProjectKB_Class90] of  String
+
+	(name ":INSTANCE-ANNOTATION")
+	(string_value "%3AANNOTATION-TEXT"))
+
+([OntologiaIntancia_ProjectKB_Class91] of  String
+
+	(name "http://www.w3.org/2002/07/owl#Class")
+	(string_value "%3ANAME"))
+
+([OntologiaIntancia_ProjectKB_Class92] of  String
+
+	(name ":PAL-CONSTRAINT")
+	(string_value "%3APAL-NAME"))
+
+([OntologiaIntancia_ProjectKB_Class93] of  String
+
+	(name ":META-CLASS")
+	(string_value "%3ANAME"))
+
+([OntologiaIntancia_ProjectKB_Class94] of  String
+
+	(name "http://www.w3.org/2002/07/owl#Thing")
+	(string_value "%3ANAME"))
 
 ([OWL_ProjectKB_Instance_3] of  String
 
@@ -5639,8 +5639,8 @@
 		[KB_938545_Instance_329]
 		[KB_764103_Instance_545]
 		[KB_301165_Instance_1013]
-		[KB_713803_Instance_390]
-		[Instance_443])
+		[Instance_443]
+		[KB_713803_Instance_390])
 	(default_cls_metaclass "http://www.w3.org/2002/07/owl#Class")
 	(default_facet_metaclass ":STANDARD-FACET")
 	(default_instance_widget_class_name "edu.stanford.smi.protegex.owl.ui.widget.OWLFormWidget")
