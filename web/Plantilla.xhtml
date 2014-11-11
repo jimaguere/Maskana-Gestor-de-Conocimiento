@@ -14,7 +14,7 @@
 
     <h:body rendered="#{!usuarioLogin.login}">
         <center>
-            <h1>NO SE ENCUENTRA LOGEADO EN EL SISTEMA</h1>
+            <h1>NO SE ENCUENTRA AUTENTICADO EN EL SISTEMA</h1>
             <a href="#{usuarioLogin.url}/faces/Login.xhtml">Login</a>
         </center>
     </h:body>
@@ -27,36 +27,25 @@
                     <ui:insert name="left"><br></br>
                         <center>
                             <h:form>
-                                <p:panelMenu style="width:80%"> 
+                                <p:panelMenu style="width:80%" id="menuPpal"> 
 
-                                    <p:submenu label="Gestión Tesis"> 
-
-                                        <p:menuitem value="Trabajos de Grado"/>
-                                        <p:menuitem value="Lineas de Investigación" action="/lineas_investigacion/Lista"/>
-                                        <p:menuitem value="Modalidades" action="/modalidad/Lista.xhtml"/>
-
+                                    <p:submenu label="Gestión Documentos"> 
+                                        <p:menuitem value="Subir Documento" url="../Trabajos_Grado/SubirArchivo.xhtml" ajax="true" update="menuPpal"/> 
+                                        <p:menuitem value="Lista De Documentos" url="../Trabajos_Grado/Lista.xhtml" ajax="true" update="menuPpal"/>
                                     </p:submenu>
 
                                     <p:submenu label="Gestión Udenar"> 
 
-                                        <p:menuitem value="Facultades" action="/facultad/Lista.xhtml"/>
-                                        <p:menuitem value="Departamentos" action="/departamento/Lista.xhtml"/>
-                                        <p:menuitem value="Programas" action="/programa/Lista.xhtml"/> 
-
-                                    </p:submenu>
-
-                                    <p:submenu label="Gestión Personal"> 
-
-                                        <p:menuitem value="Docentes" action="/docente/Lista.xhtml"/>
-                                        <p:menuitem value="Estudiantes" action="/estudiante/Lista.xhtml"/>
+                                        <p:menuitem value="Facultades" url="../facultad/Lista.xhtml" ajax="true" update="menuPpal"/>
+                                        <p:menuitem value="Departamentos" url="../departamento/Lista.xhtml" ajax="true" update="menuPpal"/>
+                                        <p:menuitem value="Programas" url="../programa/Lista.xhtml" ajax="true" update="menuPpal"/> 
 
                                     </p:submenu>
 
                                     <p:submenu label="Gestión Usuarios"> 
 
-                                        <p:menuitem value="Usuarios"/>
-                                        <p:menuitem value="Auditoria"/>
-                                        <p:menuitem value="Copias de Seguridad"/>
+                                        <p:menuitem value="Adicionar Usuario" url="../Usuarios/Usuario.xhtml" ajax="true" update="menuPpal"/>
+                                        <p:menuitem value="Consultar Usuario" url="../Usuarios/ConsultaUsuario.xhtml" ajax="true" update="menuPpal"/>
 
                                     </p:submenu>
 
@@ -79,14 +68,14 @@
                     </ui:insert>
                 </div>
                 <div id="center_content">
-                              <h:form>
+                            <h:form>
                                 <p:menubar>  
                                     <p:submenu label="#{usuarioLogin.usuario}" icon="ui-icon-pencil">  
-                                        <p:menuitem value="Operaciones" url="#" />  
+                                        <p:menuitem value="Aplicaciones Perfil" url="../Usuarios/Aplicaciones.xhtml" />  
                                         <p:separator />  
-                                        <p:menuitem value="Editar Perfil" url="#"/>  
+                                        <p:menuitem value="Seguridad Perfil" url="../Usuarios/Seguridad.xhtml"/>  
                                     </p:submenu>  
-                                    <p:menuitem value="Cerrar Sesión" actionListener="#{usuarioLogin.cerrarSession}"/>  
+                                <p:menuitem value="Cerrar Sesión" action="#{usuarioLogin.cerrarSession}"/>  
                               
                                 </p:menubar>
                             </h:form>

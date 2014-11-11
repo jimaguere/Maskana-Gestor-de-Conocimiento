@@ -4,97 +4,65 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
     <body>
     <ui:composition template="./PlantillaResultado.xhtml">
         <h:head>
             <meta content='text/html; charset=iso-8859-1' http-equiv="Content-Type"/>
         </h:head>
         <ui:define name="top">
-            <h:form id="form1">  
-                <h:selectOneRadio style="height: 50px" value="#{buscador.tipoBusqueda}">
-                    <f:selectItem itemLabel="Contenido" itemValue="1"/>  
-                    <f:selectItem itemLabel="Título" itemValue="2" />  
-                    <f:selectItem itemLabel="Autor" itemValue="3" />  
-                    <p:ajax update="@form" event="change" process="@this" />
-                </h:selectOneRadio>                              
+            <h:form id="form1">
+                <p:panel style="height: 100%">
+                    <p:imageSwitch effect="fade"> 
+                        <ui:repeat value="#{imageSwitchBean.images}" var="image">  
+                            <p:graphicImage value="/resources/img/#{image}" height="100%" width="100%" />
+                        </ui:repeat>  
+                    </p:imageSwitch> 
+                    <h:panelGrid columns="3">
+                        <h:selectOneRadio style="height: 50px" value="#{buscador.tipoBusqueda}">
+                            <f:selectItem itemLabel="Contenido" itemValue="1"/>  
+                            <f:selectItem itemLabel="Título" itemValue="2" />  
+                            <f:selectItem itemLabel="Autor" itemValue="3" />  
+                            <p:ajax update="@form" event="change" process="@this" />
+                        </h:selectOneRadio>   
 
-                <h:panelGrid columns="1">
-                    <p:autoComplete  styleClass="buscador"
-                                     label="Buscar"
-                                     size="45"
-                                     completeMethod= "#{buscador.completeGeneral}"
-                                     value="#{buscador.cadenaBusqueda}"
-                                     />
-                </h:panelGrid>
-                <h:panelGrid columns="2" rendered="#{buscador.tipoBusqueda==1}">
-                    <h:outputText value="Busqueda:" />
-                    <h:selectOneRadio style="height: 50px" value="#{buscador.contenido}">
-                        <f:selectItem itemLabel="Todo" itemValue="1"/>  
-                        <f:selectItem itemLabel="Alguno" itemValue="2" />  
-                    </h:selectOneRadio>  
-                </h:panelGrid>
-                <p:commandButton
-                    value="Buscar"
-                    ajax="false"
-                    style="width: 150px"
-                    actionListener="#{buscador.buscar}"
-                    />
+                        <p:autoComplete  styleClass="buscador"
+                                         label="Buscar"
+                                         size="45"
+                                         completeMethod= "#{buscador.completeGeneral}"
+                                         value="#{buscador.cadenaBusqueda}"
+                                         />
+                        <p:commandButton
+                            value="Buscar"
+                            ajax="false"
+                            style="width: 150px"
+                            actionListener="#{buscador.buscar}"
+                            />
+                        <h:selectOneRadio style="height: 50px" value="#{buscador.contenido}"  rendered="#{buscador.tipoBusqueda==1}">
+                            <f:selectItem itemLabel="Frase Completa" itemValue="1"/>  
+                            <f:selectItem itemLabel="Cualquier Palabra" itemValue="2" />  
+                        </h:selectOneRadio> 
+                        <h:panelGroup/>
+                        <h:panelGroup/>
+                    </h:panelGrid>
+                </p:panel>
             </h:form>
         </ui:define>
 
         <ui:define name="content">
             <h:form id="form" style="width:90% ">
-                <p:dataTable value="#{buscador.lista}" var="item" rowKey="#{item.idTg}" paginator="true"
-                             rows="5" selection="#{buscador.tesisSelecion}" emptyMessage="No hay resultados">
-
-                    <p:ajax event="rowSelect"  oncomplete="tesisDialog.show()" /> 
-                    <p:column headerText="Título"  id="titulo" width="700" >
-                        <p:inputTextarea value="#{item.titulo}"   
-                                         disabled="true" style="background-color:black;color:white;width:100%;height:100%"/>
-                    </p:column>          
-                    <p:column headerText="Autor(s)" id="autor">
-                        <p:dataList value="#{item.autor}" var="autor">
-                            #{autor.nombre}
-                        </p:dataList>
-                    </p:column>
-                    <p:column style="width:4%">  
-                        <p:commandButton id="selectButton" update=":form:display" oncomplete="tesisDialog.show()" icon="ui-icon-search" title="View" action="#{buscador.asignarTesis(item)}">  
-
-                        </p:commandButton>  
-                    </p:column>  
-                </p:dataTable>
-                <p:dialog header="#{buscador.tesisSelecion.titulo}" widgetVar="tesisDialog" resizable="false"  
-                          width="1000" height="400" showEffect="explode" hideEffect="explode" id="display"> 
-                    <p:panel header="Resumen" style="height:40%; ">
-                        <p:inputTextarea value="#{buscador.tesisSelecion.resumen}" 
-                                         scrollHeight="400"     autoResize="false"  disabled="true"  style="background-color:black;color: white;width:95%;height:100px;"/>
+                <p:dataGrid value="#{buscador.lista}" var="item"  paginator="true" columns="1"
+                            rows="5"  emptyMessage="No hay resultados">
+                    <p:panel >
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Título:"/>
+                            <h:commandLink value="#{item.titulo}" title="#{item.idTg}" action="#{buscador.asignarTesis(item)}"/>
+                            <h:outputText value="Autor(s):"/>
+                            <h:outputText value="#{item.nombreAutores}"/>
+                        </h:panelGrid>
                     </p:panel> 
-                    <p:panel header="Signatura Topografica">#{buscador.tesisSelecion.sigTopografica}</p:panel>
-                    <p:dataTable value="#{buscador.tesisSelecion.autor}" var="autores">
-                        <f:facet name="header">
-                            Autor(s)
-                        </f:facet>
-                        <p:column  headerText="Nombres">
-                            #{autores.nombre}
-                        </p:column>
-                        <p:column  headerText="Calificacion">
-                            #{autores.calificacion}
-                        </p:column>
-                    </p:dataTable><br></br>
-                    <p:dataTable value="#{buscador.tesisSelecion.tesisRelacionadas}" var="tesisRel">
-                        <f:facet name="header">
-                            Trabajos Relacionados
-                        </f:facet>
-                        <p:column  headerText="Título">
-                            #{tesisRel.titulo}
-                        </p:column>
+                </p:dataGrid>
 
-                    </p:dataTable><br></br>
-                    <a href="../resources/pdf/#{buscador.tesisSelecion.idTg}.pdf">
-                        <p:graphicImage value="/resources/img/pdf.gif" height="10%" width="5%" />
-                    </a>
-                </p:dialog>
             </h:form>
         </ui:define>
 

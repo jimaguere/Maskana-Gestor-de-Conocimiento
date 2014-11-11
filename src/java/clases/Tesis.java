@@ -18,8 +18,47 @@ public class Tesis implements Comparable<Tesis> {
     private String resumen;
     private int ranking;
     private List<Tesis> tesisRelacionadas;
-    private List<Director>director;
+    private List<Docente>director;
+    private List<Docente>jurado;
+    private double puntuacion;
+    private String nombreAutores;
+    private String visitas;
 
+    public String getVisitas() {
+        return visitas;
+    }
+
+    public void setVisitas(String visitas) {
+        this.visitas = visitas;
+    }
+
+    
+    public String getNombreAutores() {
+        return nombreAutores;
+    }
+
+    public void setNombreAutores(String nombreAutores) {
+        this.nombreAutores = nombreAutores;
+    }
+
+    
+    public double getPuntuacion() {
+        return puntuacion;
+    }
+
+    public void setPuntuacion(double puntuacion) {
+        this.puntuacion = puntuacion;
+    }
+    
+    public List<Docente> getJurado() {
+        return jurado;
+    }
+
+    public void setJurado(List<Docente> jurado) {
+        this.jurado = jurado;
+    }
+
+    
     public List<Tesis> getTesisRelacionadas() {
         return tesisRelacionadas;
     }
@@ -66,6 +105,10 @@ public class Tesis implements Comparable<Tesis> {
 
     public void setAutor(List<Autor> autor) {
         this.autor = autor;
+        this.nombreAutores="";
+        for(int i=0;i<autor.size();i++){
+            this.nombreAutores=this.nombreAutores+" - "+autor.get(i).getNombre();
+        }
     }
 
     public String getResumen() {
@@ -76,11 +119,11 @@ public class Tesis implements Comparable<Tesis> {
         this.resumen = resumen;
     }
 
-    public List<Director> getDirector() {
+    public List<Docente> getDirector() {
         return director;
     }
 
-    public void setDirector(List<Director> director) {
+    public void setDirector(List<Docente> director) {
         this.director = director;
     }
     

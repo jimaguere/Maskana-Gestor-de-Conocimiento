@@ -25,7 +25,7 @@ public class Searcher {
     public static void main(String[] args) throws IllegalArgumentException,
             IOException, org.apache.lucene.queryparser.classic.ParseException {
         String indexDir = "/home/mateo/Documentos/Indice";
-        String q = "tari";
+        String q = "contenido:(\"mineria de datos\")";
         search(indexDir, q);
     }
 
@@ -33,16 +33,16 @@ public class Searcher {
             throws IOException, org.apache.lucene.queryparser.classic.ParseException {
         FSDirectory dir = FSDirectory.open(new File(indexDir));
         IndexSearcher is =new IndexSearcher(IndexReader.open(dir));
-        is.setSimilarity(new LMDirichletSimilarity((float)1)); 
          QueryParser parser = new QueryParser(Version.LUCENE_46,
                 "contenido",
                 new StandardAnalyzer(
                 Version.LUCENE_46));
         parser.setAllowLeadingWildcard(true);
+        long begin = System.currentTimeMillis();
         Query query = parser.parse(q);
         TopDocs hits = is.search(query, 30);
-        System.out.println(hits.totalHits);
         long end = System.currentTimeMillis();
+        System.out.println("busqueda realizada en:"+(end-begin));
         for (ScoreDoc scoreDoc : hits.scoreDocs) {
             Document doc = is.doc(scoreDoc.doc);
             System.out.println(doc.get("id"));

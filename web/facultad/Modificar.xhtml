@@ -12,11 +12,11 @@
 
             <ui:define name="content">
                 <h:form>
-                    <p:panel header="Modificar Facultad" rendered="#{usuarioLogin.permisos(1)}" >
+                    <p:panel header="Modificar Facultad" rendered="#{usuarioLogin.permisos(1)}" style="width: 80%;">
                         <p:messages/>
                         <h:panelGrid columns="2">
                             <h:outputLabel for="Codigo"
-                                           value="Codigo"
+                                           value="Codigo :"
                                            styleClass="requiredLbl"/>
                             <h:inputText id="Codigo"
                                          label="Codigo"
@@ -24,12 +24,13 @@
                                          required="true"
                                          disabled="true"/>
                             <h:outputLabel for="Nombre"
-                                           value="Nombre"
+                                           value="Nombre :"
                                            styleClass="requiredLbl"/>
                             <h:inputText id="Nombre"
                                          label="Nombre"
                                          value="#{facultadBean.facultadSelecionada.nombre}"
-                                         required="true"/>
+                                         required="true"
+                                         requiredMessage="Nombre campo requerido"/>
                             <p:commandButton
                                 value="Modificar"                     
                                 ajax="false"

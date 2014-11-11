@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -48,10 +49,10 @@ public class Lineainvestigacion implements Serializable {
     @Column(name = "nombre", length = 100)
     private String nombre;
     @JoinColumn(name = "cod_dep", referencedColumnName = "cod_dep")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Departamento codDep;
-    @OneToMany(mappedBy = "codigoLinea")
-    private List<Trabajosgrado> trabajosgradoList;
+    @OneToMany(mappedBy = "codigoLinea", fetch = FetchType.EAGER)
+    private List<TrabajosGrado> trabajosGradoList;
 
     public Lineainvestigacion() {
     }
@@ -93,12 +94,12 @@ public class Lineainvestigacion implements Serializable {
     }
 
     @XmlTransient
-    public List<Trabajosgrado> getTrabajosgradoList() {
-        return trabajosgradoList;
+    public List<TrabajosGrado> getTrabajosGradoList() {
+        return trabajosGradoList;
     }
 
-    public void setTrabajosgradoList(List<Trabajosgrado> trabajosgradoList) {
-        this.trabajosgradoList = trabajosgradoList;
+    public void setTrabajosGradoList(List<TrabajosGrado> trabajosGradoList) {
+        this.trabajosGradoList = trabajosGradoList;
     }
 
     @Override

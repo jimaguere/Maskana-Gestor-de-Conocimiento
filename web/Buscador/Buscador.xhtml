@@ -5,6 +5,10 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta content='text/html; charset=iso-8859-1' http-equiv="Content-Type"/>
+    </h:head>
+    #{buscador.iniciar()}
     <ui:define name="top">
         <p:imageSwitch effect="fade"> 
             <ui:repeat value="#{imageSwitchBean.images}" var="image">  
@@ -31,10 +35,10 @@
                                  />
             </h:panelGrid>
             <h:panelGrid columns="2" rendered="#{buscador.tipoBusqueda==1}">
-                <h:outputText value="Busqueda:" />
+                <h:outputText value="Buscar Por:" />
                 <h:selectOneRadio style="height: 50px" value="#{buscador.contenido}">
-                    <f:selectItem itemLabel="Todo" itemValue="1"/>  
-                    <f:selectItem itemLabel="Alguno" itemValue="2" />  
+                    <f:selectItem itemLabel="Frase Completa" itemValue="1"/>  
+                    <f:selectItem itemLabel="Cualquier Palabra" itemValue="2" />  
                 </h:selectOneRadio>  
             </h:panelGrid>
             <p:commandButton

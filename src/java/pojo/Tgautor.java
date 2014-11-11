@@ -8,6 +8,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -25,8 +26,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Tgautor.findAll", query = "SELECT t FROM Tgautor t"),
     @NamedQuery(name = "Tgautor.findByIdTg", query = "SELECT t FROM Tgautor t WHERE t.tgautorPK.idTg = :idTg"),
-    @NamedQuery(name = "Tgautor.findByCodestudiante", query = "SELECT t FROM Tgautor t WHERE t.tgautorPK.codestudiante = :codestudiante"),
-    @NamedQuery(name = "Tgautor.findByCalificacion", query = "SELECT t FROM Tgautor t WHERE t.calificacion = :calificacion")})
+    @NamedQuery(name = "Tgautor.findByCalificacion", query = "SELECT t FROM Tgautor t WHERE t.calificacion = :calificacion"),
+    @NamedQuery(name = "Tgautor.findByIdEstudiante", query = "SELECT t FROM Tgautor t WHERE t.tgautorPK.idEstudiante = :idEstudiante")})
 public class Tgautor implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -35,10 +36,10 @@ public class Tgautor implements Serializable {
     @Column(name = "calificacion", precision = 17, scale = 17)
     private Double calificacion;
     @JoinColumn(name = "id_tg", referencedColumnName = "id_tg", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Trabajosgrado trabajosgrado;
-    @JoinColumn(name = "codestudiante", referencedColumnName = "codestudiante", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private TrabajosGrado trabajosGrado;
+    @JoinColumn(name = "id_estudiante", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Estudiante estudiante;
 
     public Tgautor() {
@@ -48,8 +49,8 @@ public class Tgautor implements Serializable {
         this.tgautorPK = tgautorPK;
     }
 
-    public Tgautor(int idTg, String codestudiante) {
-        this.tgautorPK = new TgautorPK(idTg, codestudiante);
+    public Tgautor(int idTg, int idEstudiante) {
+        this.tgautorPK = new TgautorPK(idTg, idEstudiante);
     }
 
     public TgautorPK getTgautorPK() {
@@ -68,12 +69,12 @@ public class Tgautor implements Serializable {
         this.calificacion = calificacion;
     }
 
-    public Trabajosgrado getTrabajosgrado() {
-        return trabajosgrado;
+    public TrabajosGrado getTrabajosGrado() {
+        return trabajosGrado;
     }
 
-    public void setTrabajosgrado(Trabajosgrado trabajosgrado) {
-        this.trabajosgrado = trabajosgrado;
+    public void setTrabajosGrado(TrabajosGrado trabajosGrado) {
+        this.trabajosGrado = trabajosGrado;
     }
 
     public Estudiante getEstudiante() {

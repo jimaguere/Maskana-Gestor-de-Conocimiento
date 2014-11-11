@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+
+            <ui:define name="content">
+                <h:form id="form">
+                    <p:panel header="Seguridad Usuario #{usuarioLogin.usuario}" style="width: 80%;">
+                      <p:messages/>
+                       <h:panelGrid columns="2">
+                             <h:outputLabel for="Usuario"
+                                           value="Usuario :"
+                                           styleClass="requiredLbl"/>
+                              <p:inputText id="Usuario"
+                                         label="usuario"
+                                         value="#{usuarioLogin.usuario}"
+                                         required="true"
+                                         readonly="true"/>
+                              <h:outputLabel for="Clave"
+                                           value="Contraseña Actual :"
+                                           styleClass="requiredLbl"/>
+                              <p:password id="Clave" value="#{usuarioLogin.claveActual}"
+                                          required="true" requiredMessage="Contraseña Actual campo requerido"/>
+                              <h:outputLabel for="Clave_NC"
+                                           value="Nueva Contraseña :"
+                                           styleClass="requiredLbl"/>
+                              <p:password id="Clave_NC" value="#{usuarioLogin.claveNueva}"
+                                          required="true" requiredMessage="Nueva Contraseña campo requerido"/>
+                               <h:outputLabel for="Clave_C"
+                                           value="Confirmar Contraseña :"
+                                           styleClass="requiredLbl"/>
+                              <p:password id="Clave_C" value="#{usuarioLogin.claveConfirmada}"
+                                          required="true" requiredMessage="Confirmar Contraseña campo requerido"/>
+                              <h:panelGroup/>
+                              <p:commandButton action="#{usuarioLogin.editarSeguridad}" ajax="true" value="Modificar" update=":form"/>
+                         </h:panelGrid><br></br>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

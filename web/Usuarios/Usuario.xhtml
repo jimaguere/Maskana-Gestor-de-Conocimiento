@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+
+            <ui:define name="content">
+                <h:form id="form">
+                     <p:panel header="Adicionar Usuario" rendered="#{usuarioLogin.permisos(9)}" style="width: 80%;">
+                         <p:messages/>
+                         <h:panelGrid columns="2">
+                             <h:outputLabel for="Usuario"
+                                           value="Usuario :"
+                                           styleClass="requiredLbl"/>
+                              <p:inputText id="Usuario"
+                                         label="usuario"
+                                         value="#{usuarioBean.usuario}"
+                                         required="true"
+                                         requiredMessage="Usuario campo requerido"/>
+                              <h:outputLabel for="Clave"
+                                           value="Contraseña :"
+                                           styleClass="requiredLbl"/>
+                              <p:password id="Clave" value="#{usuarioBean.clave}" required="true"
+                                          requiredMessage="Contraseña campo requerido"/>
+                              <h:outputLabel for="Clave_C"
+                                           value="Confirmar Contraseña :"
+                                           styleClass="requiredLbl"/>
+                              <p:password id="Clave_C" value="#{usuarioBean.claveConfirmada}"
+                                          required="true" requiredMessage="Confirmar Contraseña campo requerido"/>
+                       
+                             
+                         </h:panelGrid><br></br>
+                         <p:dataTable value="#{usuarioBean.listaUsuarioAplicacion}" var="aplicacion" style="width: 60%;"
+                                       widgetVar="cellUsuario" emptyMessage="No existen aplicaciones">
+                           <f:facet name="header">
+                                        Aplicaciones:
+                           </f:facet>
+                            <p:column headerText="Aplicación" style="width: 80%">
+                                
+                                <p:outputLabel value="#{aplicacion.aplicacion.nombreApi}"/>
+                           
+                             </p:column>
+                             <p:column headerText="Permiso" style="width: 20%">
+                                      <center>
+                                             <p:selectBooleanCheckbox value="#{aplicacion.permiso}" />                       
+                                      </center>                                   
+                              </p:column>
+                                  
+                              </p:dataTable><br></br>
+                              <p:commandButton action="#{usuarioBean.guardarUsuario}"  ajax="true" value="Guardar" update=":form"/>
+                     </p:panel> 
+                     <p:panel header="Usuarios" rendered="#{!usuarioLogin.permisos(9)}">
+                         <h1>
+                             No tiene permisos para ver esta página
+                         </h1>
+                     </p:panel> 
+                     
+                 </h:form>
+                     
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

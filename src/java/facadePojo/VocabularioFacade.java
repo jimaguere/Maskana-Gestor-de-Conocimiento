@@ -8,6 +8,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import pojo.Vocabulario;
 
 /**
@@ -80,6 +81,28 @@ public class VocabularioFacade extends AbstractFacade<Vocabulario> {
             return getEntityManager().createNativeQuery("SELECT ts_lexize('public.simple_dict',"
                     + "'" + query + "');").getSingleResult();
         } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public void crearVocabulario(String palabra){
+        try{
+            Query query=getEntityManager().createNativeQuery("Insert into vocabulario(palabra)values(?)");
+            query.setParameter(1,palabra);
+            query.executeUpdate();
+        }catch(Exception e){
+            System.out.println("error vabulario:"+e.toString());
+        }
+    }
+    
+    public String findLexema(String palabra){
+        try{
+            Query query=getEntityManager().
+                    createNativeQuery("SELECT lexemes as palabra FROM ts_debug('spanish',?)");
+            query.setParameter(1,palabra);
+            Object[] objeto=(Object[]) query.getSingleResult();
+            return objeto[0].toString();
+        }catch(Exception e){
             return null;
         }
     }

@@ -5,7 +5,7 @@
 package ManageBean;
 
 
-import clases.Ontologia;
+import Conexion.Ontologia;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,7 +87,7 @@ public class ModeloBean {
         if (!file.exists()) {
             file.createNewFile();
         }
-        modelOnt=modelo;
+        this.modelOnt=modelo;
         modelOnt.write(new PrintWriter(file));
         System.out.println("modelo grabado");
     }

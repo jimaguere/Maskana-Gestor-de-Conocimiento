@@ -15,38 +15,51 @@ and open the template in the editor.
     <body>
     <p:layout fullPage="true">  
 
-        <p:layoutUnit position="north" size="100" header="Información Trabajo de Grado" resizable="false" closable="false" collapsible="false">   
-            <h:panelGrid columns="1">
-                <h:outputText value="Título: #{buscador.tesisSelecion.titulo}"/>
-                <h:outputText value="Signatura Topografica: #{buscador.tesisSelecion.sigTopografica}"></h:outputText>    
-                <h:outputText value="Número de visitas: "/>
-            </h:panelGrid>
+        <p:layoutUnit position="north" size="180" header="Información Trabajo de Grado" resizable="false" closable="false" collapsible="false">   
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="Título:"/>
+                    <h:outputText value="#{buscador.tesisSelecion.titulo}"/>
+                    <h:outputText value="Autor:"/>
+                    <h:outputText value="#{buscador.autores}"/>
+                    <h:outputText value="Director:"/>
+                    <h:outputText value="#{buscador.directores}"/>
+                    <h:outputText value="Vistos:"/>
+                    <h:outputText value="#{buscador.entidadTrabajo.visitas}"/>
+                    <p:commandButton action="Resultado.xhtml" value="Regresar"/>
+                    <h:panelGroup/>
+                </h:panelGrid>
+            </h:form>
         </p:layoutUnit>  
 
-        <p:layoutUnit position="west" size="250">  
-            <p:panel header="Autores">
-                <p:dataList value="#{buscador.tesisSelecion.autor}" var="aut" type="ordered">  
-                    #{aut.nombre}, Calificación :#{aut.calificacion}  
-                </p:dataList>
-            </p:panel>
-            <p:panel header="Director">
-                <p:dataList value="#{buscador.tesisSelecion.director}" var="dir" type="ordered">  
-                    #{dir.nombres} #{dir.apellidos} 
-                </p:dataList>
-            </p:panel>
-        </p:layoutUnit>  
-
-        <p:layoutUnit position="east" size="400" header="Trabajos Relacionados">  
-            <p:dataList value="#{buscador.tesisSelecion.tesisRelacionadas}" var="tesis" type="ordered">               
-                <h:commandLink  title="#{tesis.sigTopografica}">#{tesis.titulo}</h:commandlink>    
-            </p:dataList>  
+        <p:layoutUnit position="east" size="400" header="Trabajos Relacionados">
+            <p:dataGrid value="#{buscador.tesisSelecion.tesisRelacionadas}" var="tesis" columns="1">
+                <p:panel>
+                    <h:outputLink  title="#{tesis.idTg}" value="../resources/pdf/#{tesis.idTg}.pdf">#{tesis.titulo}</h:outputLink>
+                </p:panel>
+            </p:dataGrid>  
         </p:layoutUnit>  
 
         <p:layoutUnit position="center">  
-            <p:media value="../resources/pdf/#{buscador.tesisSelecion.idTg}.pdf" width="100%" height="100%">  
-                Su navegador no puede mostrar documentos pdf, <h:outputLink value="../resources/pdf/#{buscador.tesisSelecion.idTg}.pdf">click aqui</h:outputLink> para iniciar la descarga.  
-            </p:media> 
+            <hr/>
+            <h:form id="form">
+                <p:commandButton value="Si no puede ver el pdf presione aqui"
+                                 actionListener="#{buscador.verPdf}" ajax="true" update="form"/>
+                <p:panel rendered="#{buscador.java}" style="height: 100%">
+                    <applet archive="../resources/jar/webviewer.jar,../resources/jar/jPDFViewer.jar"  
+                            code="qoppa.webViewer.PDFWebViewer" width="100%" height="300px" name="jPDFViewer">
+                        <param name="OpenURL" value="../resources/pdf/#{buscador.tesisSelecion.idTg}.pdf"/>
+                        <param name="java_arguments" value="-Xmx256m"/>
+                        <param name="codebase_lookup" value="false"/> 
+                    </applet>
+                </p:panel>
+                <p:panel  header="Contenido" rendered="#{!buscador.java}" id="panelPdf">
+                    <p:inputTextarea id="editor" readonly="true"  value=" #{buscador.textoPdf}" style="width: 100%;height: 250px;color: black;text-align: justify;overflow-y: scroll;" />
+                </p:panel> 
 
+
+                <hr/>
+            </h:form>
         </p:layoutUnit> 
     </p:layout>
 </body>

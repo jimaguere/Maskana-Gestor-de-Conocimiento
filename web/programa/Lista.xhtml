@@ -16,12 +16,12 @@
                         <h:form>
                             <h:panelGrid columns="4">
                                 <h:outputLabel for="Facultad"
-                                               value="Facultad"
+                                               value="Facultad :"
                                                styleClass="requiredLbl"/>
                                 <p:selectOneMenu id="Facultad" value="#{programaBean.codFac}" 
                                                  required="true">
                                     <f:selectItem  
-                                        itemLabel="Selecione una facultad"/>
+                                        itemLabel="Selecione una facultad" itemValue=""/>
                                     <f:selectItems  value="#{facultadBean.listaFacultad}"
                                                     var="fac"
                                                     itemLabel="#{fac.nombre}"
@@ -32,12 +32,12 @@
 
                                 </p:selectOneMenu>
                                 <h:outputLabel for="departamentos"
-                                               value="Departamento"
+                                               value="Departamento :"
                                                styleClass="requiredLbl"/>
                                 <p:selectOneMenu id="departamentos" value="#{programaBean.codDep}" 
                                                  required="true">
                                     <f:selectItem 
-                                        itemLabel="selecione un departamento"
+                                        itemLabel="selecione un departamento" itemValue=""
                                         />
                                     <f:selectItems  value="#{programaBean.listaDepartamentos}"
                                                     var="dep"

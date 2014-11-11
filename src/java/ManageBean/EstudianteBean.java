@@ -48,7 +48,7 @@ public class EstudianteBean {
     int antLi;
     int limite;
     boolean cambio;
-    String clase="Estudiante";
+    private static String  clase="Estudiante";
     public String getBusqueda() {
         return busqueda;
     }

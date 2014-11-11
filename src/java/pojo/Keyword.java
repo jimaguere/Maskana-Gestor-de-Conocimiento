@@ -51,7 +51,7 @@ public class Keyword implements Serializable {
     private List<Palabra> palabraList;
     @JoinColumn(name = "id_tg", referencedColumnName = "id_tg")
     @ManyToOne
-    private Trabajosgrado idTg;
+    private TrabajosGrado idTg;
 
     public Keyword() {
     }
@@ -85,11 +85,11 @@ public class Keyword implements Serializable {
         this.palabraList = palabraList;
     }
 
-    public Trabajosgrado getIdTg() {
+    public TrabajosGrado getIdTg() {
         return idTg;
     }
 
-    public void setIdTg(Trabajosgrado idTg) {
+    public void setIdTg(TrabajosGrado idTg) {
         this.idTg = idTg;
     }
 

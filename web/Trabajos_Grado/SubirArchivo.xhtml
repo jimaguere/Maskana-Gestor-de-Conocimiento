@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='iso-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+        <h:head>
+            <meta content='text/html; charset=iso-8859-1' http-equiv="Content-Type"/>
+        </h:head>
+         
+        <ui:composition template="./../Plantilla.xhtml">
+            
+            <ui:define name="content">
+                <h:form id="form">
+                    <p:growl id="msgs" showDetail="true"/>
+                    <p:wizard flowListener="#{trabajoBean.onFlowProcess}" rendered="#{usuarioLogin.permisos(8)}" 
+                              backLabel="Atras" nextLabel="Siguiente" style="width: 90%;height:100%; ">  
+                        <p:tab id="general" title="Información General">
+                            <p:panel header="Información General" style="width: 100%;top: 50%;">
+                                <p:messages id="ms" />
+                                <h:panelGrid columns="2" style="width: 50%">
+                                    <h:outputLabel value="Facultad :"/>
+                                    <p:selectOneMenu id="Facultad" value="#{trabajoBean.codFac}" required="true"
+                                                     requiredMessage="Facultad campo requerido"
+                                                     style="width: 300px;">
+                                        <f:selectItem itemValue="" itemLabel="Selecione una Facultad"/>
+                                        <f:selectItems  value="#{trabajoBean.listaFacultad}"
+                                                        var="fac"
+                                                        itemLabel="#{fac.nombre}"
+                                                        itemValue="#{fac.codFac}"
+                                                        />
+                                        <p:ajax update="departamentos,programas"  
+                                                listener="#{trabajoBean.actualizarDepartamentos}" /> 
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="Departamento :"/>
+                                    <p:selectOneMenu id="departamentos" value="#{trabajoBean.codDep}" required="true"
+                                                     requiredMessage="Departamento campo requerido"
+                                                     style="width: 300px">
+                                        <f:selectItem itemValue="" itemLabel="Selecione un Departamento"/>
+                                        <f:selectItems  value="#{trabajoBean.listaDepartamento}"
+                                                        var="dep"
+                                                        itemLabel="#{dep.nombre}"
+                                                        itemValue="#{dep.codDep}"
+                                                        />
+                                        <p:ajax update="programas"  
+                                                listener="#{trabajoBean.actualizarProgramas()}" /> 
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="Programa :"/>
+                                    <p:selectOneMenu id="programas" value="#{trabajoBean.codProg}" required="true"
+                                                     requiredMessage="Programa campo requerido"
+                                                     style="width: 300px">
+                                        <f:selectItem itemValue="" itemLabel="Selecione un Programa"/>
+                                        <f:selectItems  value="#{trabajoBean.listaPrograma}"
+                                                        var="prog"
+                                                        itemLabel="#{prog.nombre}"
+                                                        itemValue="#{prog.codProg}"
+                                                        />
+                                    </p:selectOneMenu>                                       
+                                </h:panelGrid>
+                                <p:fileUpload fileUploadListener="#{trabajoBean.handleFileUpload}" 
+                                              mode="advanced" dragDropSupport="false"  required="true"
+                                              label="Adjuntar" invalidFileMessage="Archivo invalido"
+                                              cancelLabel="Cancelar" uploadLabel="Cargar"
+                                              invalidSizeMessage="Archivo supera el limite permitido"
+                                              style="width:80%;" requiredMessage="Seleccione un archivo"
+                                              update="ms" sizeLimit="100000000"  allowTypes="/(\.|\/)(pdf|PDF)$/" />   
+                            </p:panel>
+                        </p:tab>
+                        <p:tab id="trabajo" title="Información Documento">
+                            <p:panel header="Trabajo de Grado">
+                                <h:panelGrid columns="2">
+                                    <h:outputLabel value="Título :"/>
+                                    <p:inputTextarea value="#{trabajoBean.titulo}"   autoResize="false" rows="5" cols="100" style="color: black;text-align: justify;"
+                                                     required="true"
+                                                     requiredMessage="Título campo requerido"/>                                
+                                    <h:outputLabel value="Contenido :"/>
+                                    <p:inputTextarea value="#{trabajoBean.contenido}" autoResize="false" rows="15" cols="100" style="color: black;text-align: justify;"
+                                                     rendered="true" required="true" requiredMessage="Contenido campo requerido"/>                           
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:tab>
+                        <p:tab id="autores" title="Información Autores">
+                            <p:panel header="Propiedad Intelectual">
+                                <p:messages id="msAut" />
+                                <br/>
+                                <h:panelGrid columns="1">
+                                    <p:commandButton value="Adicionar Autor" 
+                                                     action="#{trabajoBean.nuevoAutor}"
+                                                     update="form:tAutor"/>
+                                </h:panelGrid>
+                                <p:dataTable value="#{trabajoBean.listaAutores}" var="aut" style="width: 60%;" rowIndexVar="it"
+                                             editable="true" editMode="cell" widgetVar="cellAutor" id="tAutor" emptyMessage="Ingrese los autores">
+                                    <f:facet name="header">
+                                        Autores:
+                                    </f:facet>
+
+                                    <p:column headerText="Nombres">
+                                        <p:cellEditor transient="Nombres">
+                                            <f:facet name="output"><h:outputText value="#{aut.nombres}" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="modelInput" value="#{aut.nombres}" style="width:96%" required="true" requiredMessage="Nombre autor campo requerido"/></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+
+                                    <p:column headerText="Apellidos">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{aut.apellidos}"/></f:facet>
+                                            <f:facet name="input"><p:inputText value="#{aut.apellidos}" style="width:96%" label="Apellidos" required="true" requiredMessage="Apellido campo requerido"/></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column style="width:4%;text-align: center">
+                                        <p:commandButton update=":form" ajax="true" icon="ui-icon-circle-close" title="Eliminar"  action="#{trabajoBean.removerAutor(it)}">
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable><br/>
+                                <h:panelGrid columns="1">
+                                    <p:commandButton value="Adicionar Director" 
+                                                     action="#{trabajoBean.nuevoDirector}"
+                                                     update="form:tDirector"/>
+                                </h:panelGrid>
+                                <p:dataTable value="#{trabajoBean.listaDirectores}" var="doc" style="width: 60%"
+                                             editable="true" editMode="cell" widgetVar="cellDirector" id="tDirector" emptyMessage="Ingrese los directores"
+                                             rowIndexVar="jt">
+                                    <f:facet name="header">
+                                        Director y Codirector:
+                                    </f:facet>
+
+                                    <p:column headerText="Nombres">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{doc.nombre}" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="modelInput" value="#{doc.nombre}" style="width:96%" required="false" requiredMessage="Los nombres del director son obligatorios"/></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+
+                                    <p:column headerText="Apellidos">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{doc.apellido}"/></f:facet>
+                                            <f:facet name="input"><p:inputText value="#{doc.apellido}" style="width:96%" label="Apellidos" required="false" requiredMessage="Los apellidos del director son obligatorios"/></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column style="width:4%;text-align: center">
+                                        <p:commandButton 
+                                                     ajax="true"
+                                                     action="#{trabajoBean.removerDirector(jt)}"
+                                                     update=":form:tDirector"
+                                                     icon="ui-icon-circle-close"/>
+                                    </p:column>
+                                </p:dataTable><br/>
+                                <p:commandButton action="#{trabajoBean.crearDocumento}" value="Crear Documento" update="form:msAut"/>
+                            </p:panel>
+
+                        </p:tab>
+
+
+                    </p:wizard>
+                </h:form>
+                <p:panel header="Cargar Archivo" rendered="#{!usuarioLogin.permisos(8)}">
+                    #{usuarioLogin.usuario} no tiene permisos para el acceder a esta pagina
+                </p:panel>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

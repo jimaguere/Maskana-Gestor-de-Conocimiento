@@ -12,29 +12,31 @@
 
             <ui:define name="content">
                 <h:form>
-                    <p:panel header="Modificar Programa" rendered="#{usuarioLogin.permisos(3)}">
+                    <p:panel header="Modificar Programa" rendered="#{usuarioLogin.permisos(3)}" style="width: 80%;">
                         <p:messages/>
                         <h:panelGrid columns="2">
                             <h:outputLabel for="Codigo"
-                                           value="Codigo"
+                                           value="Codigo :"
                                            styleClass="requiredLbl"/>
                             <h:inputText id="Codigo"
                                          label="Codigo"
                                          value="#{programaBean.programaSeleccionado.codProg}"
                                          required="true"
-                                         disabled="true"/>
+                                         disabled="true"
+                                         requiredMessage="Codigo campo requerido"/>
                             <h:outputLabel for="Nombre"
-                                           value="Nombre"
+                                           value="Nombre :"
                                            styleClass="requiredLbl"/>
                             <h:inputText id="Nombre"
                                          label="Nombre"
                                          value="#{programaBean.programaSeleccionado.nombre}"
-                                         required="true"/>
+                                         required="true"
+                                         requiredMessage="Nombre campo requerido"/>
                             <h:outputLabel for="Facultad"
-                                           value="Facultad"
+                                           value="Facultad :"
                                            styleClass="requiredLbl"/>
                             <p:selectOneMenu id="Facultad" value="#{programaBean.codFac}" 
-                                             required="true">
+                                             required="true" requiredMessage="Facultad campo requerido">
                                 <f:selectItem  
                                               itemLabel="Selecione una facultad la actual es
                                               #{programaBean.programaSeleccionado.codDep.codFac.nombre}"/>
@@ -48,10 +50,10 @@
 
                             </p:selectOneMenu>
                             <h:outputLabel for="departamentos"
-                                           value="Departamento"
+                                           value="Departamento :"
                                            styleClass="requiredLbl"/>
                             <p:selectOneMenu id="departamentos" value="#{programaBean.codDep}" 
-                                             required="true">
+                                             required="true" requiredMessage="Departamento campo requerido">
                                 <f:selectItem 
                                     itemLabel="selecione un departamento el actual es 
                                     #{programaBean.programaSeleccionado.codDep.nombre}"

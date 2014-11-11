@@ -10,6 +10,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -44,7 +45,7 @@ public class Usuario implements Serializable {
     @Size(min = 1, max = 250)
     @Column(name = "clave_usuario", nullable = false, length = 250)
     private String claveUsuario;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "usuario",fetch= FetchType.LAZY)
     private List<UsuarioAplicacion> usuarioAplicacionList;
 
     public Usuario() {

@@ -11,6 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,15 +36,21 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "trabajosgrado", catalog = "sawa", schema = "public")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Trabajosgrado.findAll", query = "SELECT t FROM Trabajosgrado t"),
-    @NamedQuery(name = "Trabajosgrado.findByIdTg", query = "SELECT t FROM Trabajosgrado t WHERE t.idTg = :idTg"),
-    @NamedQuery(name = "Trabajosgrado.findBySigtopografica", query = "SELECT t FROM Trabajosgrado t WHERE t.sigtopografica = :sigtopografica"),
-    @NamedQuery(name = "Trabajosgrado.findByTitulo", query = "SELECT t FROM Trabajosgrado t WHERE t.titulo = :titulo"),
-    @NamedQuery(name = "Trabajosgrado.findByResumen", query = "SELECT t FROM Trabajosgrado t WHERE t.resumen = :resumen"),
-    @NamedQuery(name = "Trabajosgrado.findByAbstract1", query = "SELECT t FROM Trabajosgrado t WHERE t.abstract1 = :abstract1"),
-    @NamedQuery(name = "Trabajosgrado.findByCalificacion", query = "SELECT t FROM Trabajosgrado t WHERE t.calificacion = :calificacion"),
-    @NamedQuery(name = "Trabajosgrado.findByFechasustentacion", query = "SELECT t FROM Trabajosgrado t WHERE t.fechasustentacion = :fechasustentacion")})
-public class Trabajosgrado implements Serializable {
+    @NamedQuery(name = "TrabajosGrado.findAll", query = "SELECT t FROM TrabajosGrado t"),
+    @NamedQuery(name = "TrabajosGrado.findByIdTg", query = "SELECT t FROM TrabajosGrado t WHERE t.idTg = :idTg"),
+    @NamedQuery(name = "TrabajosGrado.findBySigtopografica", query = "SELECT t FROM TrabajosGrado t WHERE t.sigtopografica = :sigtopografica"),
+    @NamedQuery(name = "TrabajosGrado.findByTitulo", query = "SELECT t FROM TrabajosGrado t WHERE t.titulo = :titulo"),
+    @NamedQuery(name = "TrabajosGrado.findByResumen", query = "SELECT t FROM TrabajosGrado t WHERE t.resumen = :resumen"),
+    @NamedQuery(name = "TrabajosGrado.findByAbstract1", query = "SELECT t FROM TrabajosGrado t WHERE t.abstract1 = :abstract1"),
+    @NamedQuery(name = "TrabajosGrado.findByCalificacion", query = "SELECT t FROM TrabajosGrado t WHERE t.calificacion = :calificacion"),
+    @NamedQuery(name = "TrabajosGrado.findByFechasustentacion", query = "SELECT t FROM TrabajosGrado t WHERE t.fechasustentacion = :fechasustentacion"),
+    @NamedQuery(name = "TrabajosGrado.findByVisitas", query = "SELECT t FROM TrabajosGrado t WHERE t.visitas = :visitas"),
+    @NamedQuery(name= "Trabajosgrado.findByRango",query="SELECT t FROM TrabajosGrado t ORDER BY T.fechasustentacion DESC")})
+public class TrabajosGrado implements Serializable {
+    @ManyToMany(mappedBy = "trabajosGradoList", fetch = FetchType.LAZY)
+    private List<Docente> docenteList;
+    @ManyToMany(mappedBy = "trabajosGradoList1", fetch = FetchType.LAZY)
+    private List<Docente> docenteList1;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,25 +75,21 @@ public class Trabajosgrado implements Serializable {
     @Column(name = "fechasustentacion")
     @Temporal(TemporalType.DATE)
     private Date fechasustentacion;
-    @ManyToMany(mappedBy = "trabajosgradoList")
-    private List<Docente> docenteList;
-    @ManyToMany(mappedBy = "trabajosgradoList1")
-    private List<Docente> docenteList1;
-    @OneToMany(mappedBy = "idTg")
-    private List<Keyword> keywordList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "trabajosgrado")
+    @Column(name = "visitas")
+    private Integer visitas;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "trabajosGrado", fetch = FetchType.LAZY)
     private List<Tgautor> tgautorList;
     @JoinColumn(name = "cod_modalidad", referencedColumnName = "cod_modalidad")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Modalidad codModalidad;
     @JoinColumn(name = "codigo_linea", referencedColumnName = "codigo_linea")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Lineainvestigacion codigoLinea;
 
-    public Trabajosgrado() {
+    public TrabajosGrado() {
     }
 
-    public Trabajosgrado(Integer idTg) {
+    public TrabajosGrado(Integer idTg) {
         this.idTg = idTg;
     }
 
@@ -146,31 +149,12 @@ public class Trabajosgrado implements Serializable {
         this.fechasustentacion = fechasustentacion;
     }
 
-    @XmlTransient
-    public List<Docente> getDocenteList() {
-        return docenteList;
+    public Integer getVisitas() {
+        return visitas;
     }
 
-    public void setDocenteList(List<Docente> docenteList) {
-        this.docenteList = docenteList;
-    }
-
-    @XmlTransient
-    public List<Docente> getDocenteList1() {
-        return docenteList1;
-    }
-
-    public void setDocenteList1(List<Docente> docenteList1) {
-        this.docenteList1 = docenteList1;
-    }
-
-    @XmlTransient
-    public List<Keyword> getKeywordList() {
-        return keywordList;
-    }
-
-    public void setKeywordList(List<Keyword> keywordList) {
-        this.keywordList = keywordList;
+    public void setVisitas(Integer visitas) {
+        this.visitas = visitas;
     }
 
     @XmlTransient
@@ -208,10 +192,10 @@ public class Trabajosgrado implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Trabajosgrado)) {
+        if (!(object instanceof TrabajosGrado)) {
             return false;
         }
-        Trabajosgrado other = (Trabajosgrado) object;
+        TrabajosGrado other = (TrabajosGrado) object;
         if ((this.idTg == null && other.idTg != null) || (this.idTg != null && !this.idTg.equals(other.idTg))) {
             return false;
         }
@@ -220,7 +204,23 @@ public class Trabajosgrado implements Serializable {
 
     @Override
     public String toString() {
-        return "pojo.Trabajosgrado[ idTg=" + idTg + " ]";
+        return "pojo.TrabajosGrado[ idTg=" + idTg + " ]";
+    }
+
+    public List<Docente> getDocenteList() {
+        return docenteList;
+    }
+
+    public void setDocenteList(List<Docente> docenteList) {
+        this.docenteList = docenteList;
+    }
+
+    public List<Docente> getDocenteList1() {
+        return docenteList1;
+    }
+
+    public void setDocenteList1(List<Docente> docenteList1) {
+        this.docenteList1 = docenteList1;
     }
     
 }

@@ -9,6 +9,9 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -16,10 +19,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "docente", catalog = "sawa", schema = "public")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Docente.findAll", query = "SELECT d FROM Docente d"),
     @NamedQuery(name = "Docente.findByCodocente", query = "SELECT d FROM Docente d WHERE d.codocente = :codocente"),
@@ -35,14 +34,22 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Docente.findByCedula", query = "SELECT d FROM Docente d WHERE d.cedula = :cedula"),
     @NamedQuery(name = "Docente.findByNombre", query = "SELECT d FROM Docente d WHERE d.nombre = :nombre"),
     @NamedQuery(name = "Docente.findByApellido", query = "SELECT d FROM Docente d WHERE d.apellido = :apellido"),
-    @NamedQuery(name = "Docente.findByTipo", query = "SELECT d FROM Docente d WHERE d.tipo = :tipo")})
+    @NamedQuery(name = "Docente.findByTipo", query = "SELECT d FROM Docente d WHERE d.tipo = :tipo"),
+    @NamedQuery(name = "Docente.findById", query = "SELECT d FROM Docente d WHERE d.id = :id")})
 public class Docente implements Serializable {
+    @JoinTable(name = "tgjurado", joinColumns = {
+        @JoinColumn(name = "id_docente", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
+        @JoinColumn(name = "id_tg", referencedColumnName = "id_tg", nullable = false)})
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<TrabajosGrado> trabajosGradoList;
+    @JoinTable(name = "tgasesor", joinColumns = {
+        @JoinColumn(name = "id_docente", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
+        @JoinColumn(name = "id_tg", referencedColumnName = "id_tg", nullable = false)})
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<TrabajosGrado> trabajosGradoList1;
     private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "codocente", nullable = false, length = 20)
+    @Size(max = 20)
+    @Column(name = "codocente", length = 20)
     private String codocente;
     @Size(max = 100)
     @Column(name = "nombres", length = 100)
@@ -58,22 +65,17 @@ public class Docente implements Serializable {
     private String apellido;
     @Column(name = "tipo")
     private Character tipo;
-    @JoinTable(name = "tgjurado", joinColumns = {
-        @JoinColumn(name = "codocente", referencedColumnName = "codocente", nullable = false)}, inverseJoinColumns = {
-        @JoinColumn(name = "id_tg", referencedColumnName = "id_tg", nullable = false)})
-    @ManyToMany
-    private List<Trabajosgrado> trabajosgradoList;
-    @JoinTable(name = "tgasesor", joinColumns = {
-        @JoinColumn(name = "codocente", referencedColumnName = "codocente", nullable = false)}, inverseJoinColumns = {
-        @JoinColumn(name = "id_tg", referencedColumnName = "id_tg", nullable = false)})
-    @ManyToMany
-    private List<Trabajosgrado> trabajosgradoList1;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
     public Docente() {
     }
 
-    public Docente(String codocente) {
-        this.codocente = codocente;
+    public Docente(Integer id) {
+        this.id = id;
     }
 
     public String getCodocente() {
@@ -124,28 +126,18 @@ public class Docente implements Serializable {
         this.tipo = tipo;
     }
 
-    @XmlTransient
-    public List<Trabajosgrado> getTrabajosgradoList() {
-        return trabajosgradoList;
+    public Integer getId() {
+        return id;
     }
 
-    public void setTrabajosgradoList(List<Trabajosgrado> trabajosgradoList) {
-        this.trabajosgradoList = trabajosgradoList;
-    }
-
-    @XmlTransient
-    public List<Trabajosgrado> getTrabajosgradoList1() {
-        return trabajosgradoList1;
-    }
-
-    public void setTrabajosgradoList1(List<Trabajosgrado> trabajosgradoList1) {
-        this.trabajosgradoList1 = trabajosgradoList1;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (codocente != null ? codocente.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -156,7 +148,7 @@ public class Docente implements Serializable {
             return false;
         }
         Docente other = (Docente) object;
-        if ((this.codocente == null && other.codocente != null) || (this.codocente != null && !this.codocente.equals(other.codocente))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -164,7 +156,23 @@ public class Docente implements Serializable {
 
     @Override
     public String toString() {
-        return "pojo.Docente[ codocente=" + codocente + " ]";
+        return "pojo.Docente[ id=" + id + " ]";
+    }
+
+    public List<TrabajosGrado> getTrabajosGradoList() {
+        return trabajosGradoList;
+    }
+
+    public void setTrabajosGradoList(List<TrabajosGrado> trabajosGradoList) {
+        this.trabajosGradoList = trabajosGradoList;
+    }
+
+    public List<TrabajosGrado> getTrabajosGradoList1() {
+        return trabajosGradoList1;
+    }
+
+    public void setTrabajosGradoList1(List<TrabajosGrado> trabajosGradoList1) {
+        this.trabajosGradoList1 = trabajosGradoList1;
     }
     
 }

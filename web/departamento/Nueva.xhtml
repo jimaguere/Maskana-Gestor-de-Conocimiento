@@ -12,28 +12,31 @@
 
             <ui:define name="content">
                 <h:form>
-                    <p:panel header="Registro de Departamentos" rendered="#{usuarioLogin.permisos(2)}">
+                    <p:panel header="Registro de Departamentos" rendered="#{usuarioLogin.permisos(2)}" style="width: 80%;">
                         <p:messages/>
                         <h:panelGrid columns="2">
                             <h:outputLabel for="Codigo"
-                                           value="Codigo"
+                                           value="Codigo :"
                                            styleClass="requiredLbl"/>
                             <h:inputText id="Codigo"
                                          label="Codigo"
                                          value="#{departamentoBean.codDep}"
-                                         required="true"/>
+                                         required="true"
+                                         requiredMessage="Codigo campo requerido"/>
                             <h:outputLabel for="Nombre"
-                                           value="Nombre"
+                                           value="Nombre :"
                                            styleClass="requiredLbl"/>
                             <h:inputText id="Nombre"
                                          label="Nombre"
                                          value="#{departamentoBean.nomDep}"
-                                         required="true"/>
+                                         required="true"
+                                         requiredMessage="Nombre campo requerido"/>
                             <h:outputLabel for="Facultad"
-                                           value="Facultad"
+                                           value="Facultad :"
                                            styleClass="requiredLbl"/>
                             <p:selectOneMenu id="Facultad" value="#{departamentoBean.codFac}" 
-                                             required="true">
+                                             required="true"
+                                             requiredMessage="Facultad campo requerido">
                                 <f:selectItem itemLabel="Seleccione una Facultad"
                                               itemValue="" />
                                 <f:selectItems value="#{facultadBean.listaFacultad}"

@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../Plantilla.xhtml">
+
+            <ui:define name="content">
+                <h:form id="form">
+                    <p:panel header="Aplicaciones Usuario: #{usuarioLogin.usuario}" style="width: 80%;">
+                        <center>
+                            <p:dataTable value="#{usuarioLogin.escrituras}"
+                                         var="usuarioApi" 
+                                         style="width: 60%;"
+                                         emptyMessage="No existen aplicaciones">
+                                <f:facet name="header">
+                                    Aplicaciones:
+                                </f:facet> 
+                                <p:column headerText="Aplicación" style="width: 80%">
+
+                                    <p:outputLabel value="#{usuarioApi.aplicacion.nombreApi}"/>
+
+                                </p:column>
+                                <p:column headerText="Permiso" style="width: 20%">
+
+                                    <center>
+                                        <p:selectBooleanCheckbox value="#{usuarioApi.escritura}" disabled="true" />                       
+                                    </center> 
+
+                                </p:column>
+                            </p:dataTable>
+                        </center><br></br>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

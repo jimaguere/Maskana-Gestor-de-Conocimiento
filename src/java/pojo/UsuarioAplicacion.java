@@ -5,6 +5,7 @@
 package pojo;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -35,7 +36,7 @@ public class UsuarioAplicacion implements Serializable {
     @Column(name = "escritura")
     private Boolean escritura;
     @JoinColumn(name = "nombre_usuario", referencedColumnName = "nombre_usuario", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(cascade= CascadeType.ALL,optional = false)
     private Usuario usuario;
     @JoinColumn(name = "cod_api", referencedColumnName = "cod_api", nullable = false, insertable = false, updatable = false)
     @ManyToOne(optional = false)

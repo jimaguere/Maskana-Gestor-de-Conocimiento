@@ -11,6 +11,9 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,7 +23,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -34,19 +36,18 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Estudiante.findAll", query = "SELECT e FROM Estudiante e"),
-    @NamedQuery(name ="Estudiante.findByOrder",query="SELECT e FROM Estudiante e ORDER BY e.fechaGrado DESC"),
     @NamedQuery(name = "Estudiante.findByCodestudiante", query = "SELECT e FROM Estudiante e WHERE e.codestudiante = :codestudiante"),
     @NamedQuery(name = "Estudiante.findByApellidos", query = "SELECT e FROM Estudiante e WHERE e.apellidos = :apellidos"),
     @NamedQuery(name = "Estudiante.findByIdentificacion", query = "SELECT e FROM Estudiante e WHERE e.identificacion = :identificacion"),
     @NamedQuery(name = "Estudiante.findByFechaGrado", query = "SELECT e FROM Estudiante e WHERE e.fechaGrado = :fechaGrado"),
-    @NamedQuery(name = "Estudiante.findByNombres", query = "SELECT e FROM Estudiante e WHERE e.nombres = :nombres")})
+    @NamedQuery(name = "Estudiante.findByNombres", query = "SELECT e FROM Estudiante e WHERE e.nombres = :nombres"),
+    @NamedQuery(name = "Estudiante.findById", query = "SELECT e FROM Estudiante e WHERE e.id = :id")})
 public class Estudiante implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estudiante", fetch = FetchType.EAGER)
+    private List<Tgautor> tgautorList;
     private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "codestudiante", nullable = false, length = 20)
+    @Size(max = 1000)
+    @Column(name = "codestudiante", length = 1000)
     private String codestudiante;
     @Size(max = 50)
     @Column(name = "apellidos", length = 50)
@@ -60,17 +61,20 @@ public class Estudiante implements Serializable {
     @Size(max = 100)
     @Column(name = "nombres", length = 100)
     private String nombres;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estudiante")
-    private List<Tgautor> tgautorList;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id", nullable = false)
+    private Integer id;
     @JoinColumn(name = "programa", referencedColumnName = "cod_prog")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Programa programa;
 
     public Estudiante() {
     }
 
-    public Estudiante(String codestudiante) {
-        this.codestudiante = codestudiante;
+    public Estudiante(Integer id) {
+        this.id = id;
     }
 
     public String getCodestudiante() {
@@ -113,13 +117,12 @@ public class Estudiante implements Serializable {
         this.nombres = nombres;
     }
 
-    @XmlTransient
-    public List<Tgautor> getTgautorList() {
-        return tgautorList;
+    public Integer getId() {
+        return id;
     }
 
-    public void setTgautorList(List<Tgautor> tgautorList) {
-        this.tgautorList = tgautorList;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Programa getPrograma() {
@@ -133,7 +136,7 @@ public class Estudiante implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (codestudiante != null ? codestudiante.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -144,7 +147,7 @@ public class Estudiante implements Serializable {
             return false;
         }
         Estudiante other = (Estudiante) object;
-        if ((this.codestudiante == null && other.codestudiante != null) || (this.codestudiante != null && !this.codestudiante.equals(other.codestudiante))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -152,7 +155,16 @@ public class Estudiante implements Serializable {
 
     @Override
     public String toString() {
-        return "pojo.Estudiante[ codestudiante=" + codestudiante + " ]";
+        return "pojo.Estudiante[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<Tgautor> getTgautorList() {
+        return tgautorList;
+    }
+
+    public void setTgautorList(List<Tgautor> tgautorList) {
+        this.tgautorList = tgautorList;
     }
     
 }

@@ -11,20 +11,19 @@
         <title>Resultado</title>
     </h:head>
 
-    <h:body >
-        <center>
-            <p:layout fullPage="false" style="width: 80%;height:550px">
-                <p:layoutUnit position="center">
-                    <div id="top3" class="top">
-                        <ui:insert name="top">Top</ui:insert>
-                    </div>
+    <h:body>
+        <p:layout fullPage="true" style="width: 80%;height:100%">
+            <p:layoutUnit position="center">
+                <div id="top3" class="top">
+                    <ui:insert name="top">Top</ui:insert>
+                </div>
 
-                    <div id="center_content3" class="center_content">
-                        <ui:insert name="content">Content</ui:insert>                 
-                    </div>
-                </p:layoutUnit>    
-            </p:layout>
-        </center>
+                <div >
+                    <center>
+                        <ui:insert name="content">Content</ui:insert>
+                    </center>
+                </div>
+            </p:layoutUnit>    
+        </p:layout>
     </h:body>
-
 </html>

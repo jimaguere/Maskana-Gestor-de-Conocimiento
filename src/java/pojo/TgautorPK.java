@@ -9,7 +9,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  *
@@ -22,16 +21,15 @@ public class TgautorPK implements Serializable {
     private int idTg;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "codestudiante", nullable = false, length = 20)
-    private String codestudiante;
+    @Column(name = "id_estudiante", nullable = false)
+    private int idEstudiante;
 
     public TgautorPK() {
     }
 
-    public TgautorPK(int idTg, String codestudiante) {
+    public TgautorPK(int idTg, int idEstudiante) {
         this.idTg = idTg;
-        this.codestudiante = codestudiante;
+        this.idEstudiante = idEstudiante;
     }
 
     public int getIdTg() {
@@ -42,19 +40,19 @@ public class TgautorPK implements Serializable {
         this.idTg = idTg;
     }
 
-    public String getCodestudiante() {
-        return codestudiante;
+    public int getIdEstudiante() {
+        return idEstudiante;
     }
 
-    public void setCodestudiante(String codestudiante) {
-        this.codestudiante = codestudiante;
+    public void setIdEstudiante(int idEstudiante) {
+        this.idEstudiante = idEstudiante;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (int) idTg;
-        hash += (codestudiante != null ? codestudiante.hashCode() : 0);
+        hash += (int) idEstudiante;
         return hash;
     }
 
@@ -68,7 +66,7 @@ public class TgautorPK implements Serializable {
         if (this.idTg != other.idTg) {
             return false;
         }
-        if ((this.codestudiante == null && other.codestudiante != null) || (this.codestudiante != null && !this.codestudiante.equals(other.codestudiante))) {
+        if (this.idEstudiante != other.idEstudiante) {
             return false;
         }
         return true;
@@ -76,7 +74,7 @@ public class TgautorPK implements Serializable {
 
     @Override
     public String toString() {
-        return "pojo.TgautorPK[ idTg=" + idTg + ", codestudiante=" + codestudiante + " ]";
+        return "pojo.TgautorPK[ idTg=" + idTg + ", idEstudiante=" + idEstudiante + " ]";
     }
     
 }

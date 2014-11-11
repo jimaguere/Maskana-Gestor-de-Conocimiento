@@ -30,10 +30,39 @@ public class UsuarioLogin {
     UsuarioFacade usuarioFacade;
     private String usuario;
     private String clave;
+    private String claveActual;
+    private String claveNueva;
+    private String claveConfirmada;
     private boolean login;
     private String url;
     private List<UsuarioAplicacion>escrituras;
+    private Usuario usuarioEdit;
 
+    public String getClaveActual() {
+        return claveActual;
+    }
+
+    public void setClaveActual(String claveActual) {
+        this.claveActual = claveActual;
+    }
+
+    public String getClaveNueva() {
+        return claveNueva;
+    }
+
+    public void setClaveNueva(String claveNueva) {
+        this.claveNueva = claveNueva;
+    }
+
+    
+    public String getClaveConfirmada() {
+        return claveConfirmada;
+    }
+
+    public void setClaveConfirmada(String claveConfirmada) {
+        this.claveConfirmada = claveConfirmada;
+    }
+    
     public List<UsuarioAplicacion> getEscrituras() {
         return escrituras;
     }
@@ -89,15 +118,36 @@ public class UsuarioLogin {
     }
 
     public void setLogin(boolean login) {
-        this.login = login;
+        this.login = login;        
     }
 
-    public void cerrarSession() throws IOException {
+    public String cerrarSession() throws IOException {
         this.login = false;
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().clear();
         FacesContext.getCurrentInstance().getExternalContext().getSession(login);
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        FacesContext.getCurrentInstance().getExternalContext().redirect( url+"/faces/Login.xhtml");
+        return "/faces/Login.xhtml";
+    }
+    
+    public void editarSeguridad() throws Exception{
+        if(!this.clave.equals(this.claveActual)){
+              FacesContext.getCurrentInstance().
+                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Contraseña Actual incorrecta", ""));
+              return;
+        }
+        if(!this.claveConfirmada.equals(this.claveNueva)){
+            FacesContext.getCurrentInstance().
+                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Las contraseñas no coinciden ", ""));
+            return;
+        }
+        usuarioEdit.setClaveUsuario(md5(this.claveConfirmada));
+        this.usuarioFacade.edit(usuarioEdit);
+        this.clave=this.claveConfirmada;
+        this.claveConfirmada=new String();
+        this.claveActual=new String();
+        this.claveNueva=new String();
+        FacesContext.getCurrentInstance().
+                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Contraseñas cambiada exitosamente ", ""));
     }
 
     public void confirmar() throws Exception {
@@ -108,10 +158,11 @@ public class UsuarioLogin {
             return;
         }
         Usuario user = usuarios.get(0);
+        usuarioEdit=user;
         escrituras=user.getUsuarioAplicacionList();
         if (user.getClaveUsuario().equals(md5(this.clave))) {
             this.login = true;
-            context.getExternalContext().redirect("Menu.xhtml");
+            context.getExternalContext().redirect("Inicial/Menu.xhtml");
         } else {
             context.addMessage(null, new FacesMessage("Error", "Clave Incorrecta para el usuario:" + this.usuario));
         }
